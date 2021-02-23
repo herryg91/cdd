@@ -21,4 +21,5 @@ go install \
 ### How To Use
 ```
 TBD
+Will update later with proper examples
 ```
