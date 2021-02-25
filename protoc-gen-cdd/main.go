@@ -13,9 +13,11 @@ import (
 )
 
 var (
-	fType        = flag.String("type", "grst", "option: grst|grst-validation|crud")
+	fType = flag.String("type", "grst", "option: grst|crud")
+	/*grst specific options*/
 	fProtocGoOut = flag.Bool("protoc-gen-go", true, "generate *.pb.go (calling `protoc-gen-go`) with additional features, such as request validation & default value. protoc-gen-go version: v1.25.0. default: true")
-	fImportPath  = flag.String("go-import-path", "", "go import path. example: github.com/herryg91/cdd/examples/province-api")
+	/*crud specific options*/
+	fImportPath = flag.String("go-import-path", "", "go import path. example: github.com/herryg91/cdd/examples/province-api")
 )
 
 func main() {
@@ -23,35 +25,30 @@ func main() {
 	defer glog.Flush()
 
 	protogen.Options{ParamFunc: flag.CommandLine.Set}.Run(func(plugin *protogen.Plugin) error {
-		// log.Println("Parsing code generator request")
-
 		registry := descriptor.New(*plugin.Request)
-
 		var gen generator.Generator = nil
 		switch *fType {
 		case "grst":
 			gen = grstframework.New(registry, *plugin, *fProtocGoOut)
 		case "crud":
 			if *fImportPath == "" {
-				return fmt.Errorf("Parameter `pkgpath` for `crud` is required, found: %s", *fImportPath)
+				return fmt.Errorf("Option `go-import-path` is required. Example `--cdd_opt go-import-path=$(go list -m)>`")
 			}
 			gen = crudgenerator.New(registry, *fImportPath)
 		default:
-			return fmt.Errorf("invalid opt `type`, got: %s, expect: %s", *fType, "grst|grst-validation|crud")
+			return fmt.Errorf("Invalid option `type`, got: %s, expect: %s", *fType, "grst|crud")
 		}
 		if gen != nil {
 			files, err := gen.Generate()
 			if err != nil {
 				return err
 			}
-			// log.Println("Generating...")
 			for _, f := range files {
 
 				genFile := plugin.NewGeneratedFile(f.Filename, f.GoImportPath)
 				if _, err := genFile.Write([]byte(f.Content)); err != nil {
 					return err
 				}
-				// log.Printf("NewGeneratedFile: %s\n", f.Filename)
 			}
 		}
 

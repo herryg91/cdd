@@ -94,6 +94,20 @@ func (fieldext *FieldDescriptorExt) GetGoStandartType() string {
 	return t
 }
 
+func (fieldext *FieldDescriptorExt) GetGoTagAttribute() string {
+	result := ""
+	if fieldext.DBField.PrimaryKey {
+		result = "primary_key"
+	}
+	if fieldext.DBField.ColumnName != "" {
+		if result != "" {
+			result += ";"
+		}
+		result += "column:" + fieldext.DBField.ColumnName
+	}
+	return result
+}
+
 func parseExtDBField(field *descriptorpb.FieldDescriptorProto) *cddext.DBField {
 	if field.Options == nil {
 		return nil

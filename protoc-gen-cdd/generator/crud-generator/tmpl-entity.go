@@ -28,7 +28,7 @@ var (
 	tmplEntity = template.Must(template.New("entity").Parse(`
 	type {{.GetName}} struct {
 		{{- range $fext := .FieldExt}}
-		{{$fext.GetName}} {{$fext.GetTypeGo}} ` + "`" + `gorm:"{{$fext.GetGormTag}}"` + "`" + `
+		{{$fext.GetName}} {{$fext.GetGoStandartType}} ` + "`" + `gorm:"{{$fext.GetGoTagAttribute}}"` + "`" + `
 		{{- end}}
 		
 		{{if not .DBSchema.DisableTimestampTracking}}
