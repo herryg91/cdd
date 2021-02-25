@@ -25,10 +25,13 @@ var (
 	{{ end }}
 	`))
 
-	tmplEntity = template.Must(template.New("entity").Parse(`
+	tmplEntity = template.Must(template.New("entity").Funcs(template.FuncMap{
+		"getGormTagAttribute": getGormTagAttribute,
+		"getGoStandartType":   getGoStandartType,
+	}).Parse(`
 	type {{.GetName}} struct {
 		{{- range $fext := .FieldExt}}
-		{{$fext.GetName}} {{$fext.GetGoStandartType}} ` + "`" + `gorm:"{{$fext.GetGoTagAttribute}}"` + "`" + `
+		{{$fext.GetName}} {{getGoStandartType $fext}} ` + "`" + `gorm:"{{getGormTagAttribute $fext}}"` + "`" + `
 		{{- end}}
 		
 		{{if not .DBSchema.DisableTimestampTracking}}

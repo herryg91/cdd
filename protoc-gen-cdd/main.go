@@ -17,7 +17,7 @@ var (
 	/*grst specific options*/
 	fProtocGoOut = flag.Bool("protoc-gen-go", true, "generate *.pb.go (calling `protoc-gen-go`) with additional features, such as request validation & default value. protoc-gen-go version: v1.25.0. default: true")
 	/*crud specific options*/
-	fImportPath = flag.String("go-import-path", "", "go import path. example: github.com/herryg91/cdd/examples/province-api")
+	fGoModuleName = flag.String("go-module-name", "", "Go module name, check in go.mod file. This needed for local import prefix. example: github.com/herryg91/cdd/examples/province-api")
 )
 
 func main() {
@@ -31,10 +31,10 @@ func main() {
 		case "grst":
 			gen = grstframework.New(registry, *plugin, *fProtocGoOut)
 		case "crud":
-			if *fImportPath == "" {
-				return fmt.Errorf("Option `go-import-path` is required. Example `--cdd_opt go-import-path=$(go list -m)>`")
+			if *fGoModuleName == "" {
+				return fmt.Errorf("Option `go-module-name` is required. Example `--cdd_opt go-module-name=$(go list -m)>`")
 			}
-			gen = crudgenerator.New(registry, *fImportPath)
+			gen = crudgenerator.New(registry, *fGoModuleName)
 		default:
 			return fmt.Errorf("Invalid option `type`, got: %s, expect: %s", *fType, "grst|crud")
 		}
