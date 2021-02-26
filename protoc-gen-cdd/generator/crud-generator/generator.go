@@ -41,11 +41,11 @@ func (t *CRUDGeneratorTemplate) Generate() ([]*generator.GeneratorResponseFile, 
 				}
 				files = append(files, fileUseCaseIntf)
 
-				fileUseCaseRepoImpl, err := applyTemplateUseCaseRepoImpl(mext, t.pkgPath)
+				fileRepoMysql, err := applyTemplateRepoMysql(mext, t.pkgPath)
 				if err != nil {
 					return nil, err
 				}
-				files = append(files, fileUseCaseRepoImpl)
+				files = append(files, fileRepoMysql)
 
 				fileUseCaseImpl, err := applyTemplateUseCaseImpl(mext, t.pkgPath)
 				if err != nil {

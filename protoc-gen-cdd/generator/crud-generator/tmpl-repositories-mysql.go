@@ -8,12 +8,11 @@ import (
 
 	"github.com/herryg91/cdd/protoc-gen-cdd/descriptor"
 	"github.com/herryg91/cdd/protoc-gen-cdd/generator"
-	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
 var (
-	tmplUseCaseRepoImpl = template.Must(template.New("usecase-repo-impl").Funcs(template.FuncMap{
+	tmplRepoMysql = template.Must(template.New("repositories-mysql").Funcs(template.FuncMap{
 		"GetPrimaryKeyAsString":    getPrimaryKeyAsString,
 		"GetPrimaryKeyAsQueryStmt": getPrimaryKeyAsQueryStmt,
 	}).Parse(`
@@ -29,28 +28,28 @@ var (
 		"{{.PackagePath}}/entity"
 	)
 
-	type mysql_repository struct {
+	type MysqlRepository struct {
 		db        *gorm.DB
 		tableName string
 	}
 
-	func NewRepository(db *gorm.DB) Repository {
-		return &mysql_repository{db, "{{.DBSchema.TableName}}"}
+	func NewMysqlRepository(db *gorm.DB) *MysqlRepository {
+		return &MysqlRepository{db, "{{.DBSchema.TableName}}"}
 	}
 
-	func (r *mysql_repository) GetByPrimaryKey({{GetPrimaryKeyAsString .FieldExt "" "" "," true true}}) (entity.{{.GetName}}, error) {
+	func (r *MysqlRepository) GetByPrimaryKey({{GetPrimaryKeyAsString .FieldExt "" "" "," true true}}) (entity.{{.GetName}}, error) {
 		result := entity.{{.GetName}}{}
 		err := r.db.Table(r.tableName).Where("{{GetPrimaryKeyAsQueryStmt .FieldExt}}", {{GetPrimaryKeyAsString .FieldExt "" "" "," true false}}).Scan(&result).Error
 		return result, err
 	}
 
-	func (r *mysql_repository) GetAll() ([]entity.{{.GetName}}, error) {
+	func (r *MysqlRepository) GetAll() ([]entity.{{.GetName}}, error) {
 		result := []entity.{{.GetName}}{}
 		err := r.db.Table(r.tableName).Find(&result).Error
 		return result, err
 	}
 
-	func (r *mysql_repository) Create(in entity.{{.GetName}}) (entity.{{.GetName}}, error) {
+	func (r *MysqlRepository) Create(in entity.{{.GetName}}) (entity.{{.GetName}}, error) {
 		{{ if not .DBSchema.DisableTimestampTracking}}
 		in.CreatedAt = time.Now()
 		in.UpdatedAt = time.Now() {{ end }}
@@ -59,22 +58,22 @@ var (
 		return in, err
 	}
 
-	func (r *mysql_repository) Update(in entity.{{.GetName}}) (entity.{{.GetName}}, error) {
+	func (r *MysqlRepository) Update(in entity.{{.GetName}}) (entity.{{.GetName}}, error) {
 		in.UpdatedAt = time.Now()
 		err := r.db.Table(r.tableName).Updates(&in).Error
 		return in, err
 	}
 
-	func (r *mysql_repository) Delete({{GetPrimaryKeyAsString .FieldExt "" "" "," true true}}) error {
+	func (r *MysqlRepository) Delete({{GetPrimaryKeyAsString .FieldExt "" "" "," true true}}) error {
 		return r.db.Table(r.tableName).Delete(&entity.{{.GetName}}{}, "{{GetPrimaryKeyAsQueryStmt .FieldExt}}", {{GetPrimaryKeyAsString .FieldExt "" "" "," true false}}).Error
 	}
 	`))
 )
 
-func applyTemplateUseCaseRepoImpl(mext *descriptor.MessageDescriptorExt, pkgpath string) (*generator.GeneratorResponseFile, error) {
+func applyTemplateRepoMysql(mext *descriptor.MessageDescriptorExt, pkgpath string) (*generator.GeneratorResponseFile, error) {
 	w := bytes.NewBuffer(nil)
 
-	packageName := strcase.ToKebab(strings.ToLower("crud-" + mext.DBSchema.TableName))
+	packageName := mext.DBSchema.TableName //strcase.ToKebab(strings.ToLower("crud-" + mext.DBSchema.TableName))
 	var tmplData = struct {
 		*descriptor.MessageDescriptorExt
 		PackageName  string
@@ -87,7 +86,7 @@ func applyTemplateUseCaseRepoImpl(mext *descriptor.MessageDescriptorExt, pkgpath
 		isMessageNeedImportTime(mext),
 	}
 
-	if err := tmplUseCaseRepoImpl.Execute(w, tmplData); err != nil {
+	if err := tmplRepoMysql.Execute(w, tmplData); err != nil {
 		return nil, err
 	}
 
@@ -97,7 +96,7 @@ func applyTemplateUseCaseRepoImpl(mext *descriptor.MessageDescriptorExt, pkgpath
 	}
 
 	return &generator.GeneratorResponseFile{
-		Filename:     "usecase/" + packageName + "/repository-impl-mysql.cdd.go",
+		Filename:     "repositories/" + packageName + "/mysql.cdd.go",
 		Content:      string(formatted),
 		GoImportPath: protogen.GoImportPath(""),
 	}, nil

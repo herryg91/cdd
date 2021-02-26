@@ -18,11 +18,17 @@ var (
 	fProtocGoOut = flag.Bool("protoc-gen-go", true, "generate *.pb.go (calling `protoc-gen-go`) with additional features, such as request validation & default value. protoc-gen-go version: v1.25.0. default: true")
 	/*crud specific options*/
 	fGoModuleName = flag.String("go-module-name", "", "Go module name, check in go.mod file. This needed for local import prefix. example: github.com/herryg91/cdd/examples/province-api")
+	fVersion      = flag.Bool("version", false, "version")
 )
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+
+	if *fVersion {
+		fmt.Println("protoc-gen-cdd v1.0.0")
+		return
+	}
 
 	protogen.Options{ParamFunc: flag.CommandLine.Set}.Run(func(plugin *protogen.Plugin) error {
 		registry := descriptor.New(*plugin.Request)
