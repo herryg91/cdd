@@ -3,6 +3,8 @@ package gen
 import (
 	"path/filepath"
 
+	"github.com/gosuri/uiprogress"
+	"github.com/gosuri/uiprogress/util/strutil"
 	gocli "github.com/herryg91/cdd/cdd/cli/go"
 	protocgencdd "github.com/herryg91/cdd/cdd/cli/protoc-gen-cdd"
 	"github.com/herryg91/cdd/cdd/cli/serviceYaml"
@@ -80,6 +82,16 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 	// generate grpc pb
+	uiprogress.Start()
+	bar := uiprogress.AddBar(len(contractsToGenerate)).AppendCompleted().PrependElapsed()
+	bar.Width = 50
+	bar.PrependFunc(func(b *uiprogress.Bar) string {
+		if b.Current() < len(contractsToGenerate) && b.Current() >= 0 {
+			return strutil.Resize("Generating "+contractsToGenerate[b.Current()].protoInput, 30)
+		} else {
+			return strutil.Resize("done", 30)
+		}
+	})
 	for _, ctg := range contractsToGenerate {
 		currentModule, err := gocli.GetCurrentModule()
 		if err != nil {
@@ -98,6 +110,9 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 				return err
 			}
 		}
+		bar.Incr()
 	}
+	bar.Incr()
+
 	return nil
 }

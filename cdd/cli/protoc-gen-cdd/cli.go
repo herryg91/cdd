@@ -1,7 +1,6 @@
 package protocgencdd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,9 +30,9 @@ func (pgc *ProtocGenCdd) GenerateGrst(protoFilename string, inputPath string, ou
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "go-grpc", Opts: map[string]string{}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "grpc-gateway", Opts: map[string]string{"logtostderr": "true", "generate_unbound_methods": "true"}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
 
-	fmt.Println("Run Protoc 1 =>", "in="+inputPath+" | out="+outputPath)
+	// fmt.Println("Run protoc-gen-cdd type=grst", "| in = "+inputPath+" | out ="+outputPath)
 
-	err := p.Exec(filepath.Base(protoFilename), true)
+	err := p.Exec(filepath.Base(protoFilename), false)
 	if err != nil {
 		return err
 	}
@@ -47,8 +46,8 @@ func (pgc *ProtocGenCdd) GenerateCrud(protoFilename string, inputPath string, ou
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/cddapis/")
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/googleapis/")
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "cdd", Opts: map[string]string{"type": "crud", "go-module-name": goModuleName}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
-	fmt.Println("Run Protoc 3 =>")
-	err := p.Exec(filepath.Base(protoFilename), true)
+	// fmt.Println("Run protoc-gen-cdd type=crud", "| in = "+inputPath+" | out ="+outputPath)
+	err := p.Exec(filepath.Base(protoFilename), false)
 	if err != nil {
 		return err
 	}

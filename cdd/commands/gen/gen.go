@@ -12,8 +12,8 @@ func NewGenCmd() *GenCmd {
 	c := &GenCmd{}
 	c.Command = &cobra.Command{
 		Use:   "gen",
-		Short: "faraday framework x grst codegen tools",
-		Long:  "command to generate code faraday framework (grst)",
+		Short: "Generate cdd: grst framework + crud",
+		Long:  "Generate contract driven development (cdd) grst & crud template based on service.yaml through protoc-gen-cdd",
 	}
 	c.AddCommand(NewGenGoCmd().Command)
 	return c
