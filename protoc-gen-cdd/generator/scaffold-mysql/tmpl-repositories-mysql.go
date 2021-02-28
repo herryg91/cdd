@@ -58,7 +58,7 @@ var (
 
 	func (r *MysqlDatasource) Update(in entity.{{.GetName}}) (*entity.{{.GetName}}, error) {
 		in.UpdatedAt = time.Now()
-		err := r.db.Table(r.tableName).Updates(&in).Error
+		err := r.db.Table(r.tableName).Where("{{ .GetPrimaryKeyAsQueryStmt }}", {{ .GetPrimaryKeyAsString "in." "" "," false false }}).Updates(&in).Error
 		if err != nil {
 			return nil, err
 		}
