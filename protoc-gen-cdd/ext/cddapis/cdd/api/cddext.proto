@@ -6,47 +6,34 @@ import "google/protobuf/descriptor.proto";
 option go_package = "github.com/herryg91/cdd/protoc-gen-cdd/ext/cddapis/cdd/api;cddext";
 
 
-//extend google.protobuf.FileOptions {
-  // optional string my_file_option = 100000;
-//}
 extend google.protobuf.MessageOptions {
-    DBSchema dbschema = 110000;
+  Mysql mysql = 110000;
 }
+
 extend google.protobuf.FieldOptions {
-    DBField dbfield = 120000;
+    MysqlField mysql_field = 120000;
     string validate = 121000;
     string default = 122000;
 }
-//extend google.protobuf.OneofOptions {
-  // optional int64 my_oneof_option = 130000;
-//}
-//extend google.protobuf.EnumOptions {
-  // optional bool my_enum_option = 140000;
-//}
-//extend google.protobuf.EnumValueOptions {
-  // optional uint32 my_enum_value_option = 150000;
-//}
-//extend google.protobuf.ServiceOptions {
-  // optional MyEnum my_service_option = 160000;
-//}
+
 extend google.protobuf.MethodOptions {
-    Auth auth = 170000;
+    Auth auth = 130000;
 }
 
 // Authentication
 message Auth {
-   bool needauth = 10002;
+   bool needauth = 130001;
 }
 
-// Database
-message DBSchema {
-   bool is_db_schema = 110001;
-   bool disable_timestamp_tracking = 110002;
-   bool enable_soft_delete = 110003;
-   string table_name = 110004;
+// DB: Mysql
+message Mysql {
+  bool scaffold = 110001;
+  string table_name = 110002;
+  bool disable_timestamp_tracking = 110003;
+  bool enable_soft_delete = 110004;
 }
 
-message DBField {
+message MysqlField {
   string column_name = 120001;
   bool primary_key = 120002;
   string column_type  = 120003;

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	cddext "github.com/herryg91/cdd/protoc-gen-cdd/ext/cddapis/cdd/api"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/proto"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 )
@@ -16,7 +17,7 @@ type MessageDescriptorExt struct {
 	FileExt    *FileDescriptorExt
 	NestedPath []string
 	FieldExt   []*FieldDescriptorExt
-	DBSchema   *cddext.DBSchema
+	Mysql      *cddext.Mysql
 }
 
 func (MessageDescriptorExt) New(fext *FileDescriptorExt, msg *descriptorpb.DescriptorProto, nestedPath []string) *MessageDescriptorExt {
@@ -26,16 +27,18 @@ func (MessageDescriptorExt) New(fext *FileDescriptorExt, msg *descriptorpb.Descr
 		FileExt:         fext,
 		NestedPath:      nestedPath,
 		FieldExt:        []*FieldDescriptorExt{},
-		DBSchema:        nil,
+		Mysql:           nil,
 	}
 	for _, field := range msgext.Field {
 		fieldext := FieldDescriptorExt{}.New(msgext, field)
 		msgext.FieldExt = append(msgext.FieldExt, fieldext)
 	}
-	msgext.DBSchema = parseExtDBSchema(msg)
-	if msgext.DBSchema == nil {
-		msgext.DBSchema = &cddext.DBSchema{IsDbSchema: false}
+
+	msgext.Mysql = parseExtMysql(msg)
+	if msgext.Mysql == nil {
+		msgext.Mysql = &cddext.Mysql{Scaffold: false, TableName: strings.Replace(strcase.ToKebab(msgext.GetName()), "-", "_", -1), EnableSoftDelete: false, DisableTimestampTracking: true}
 	}
+
 	return msgext
 }
 
@@ -49,17 +52,17 @@ func (msgext *MessageDescriptorExt) GetIdentifier() string {
 	return strings.Join(components, ".")
 }
 
-func parseExtDBSchema(message *descriptorpb.DescriptorProto) *cddext.DBSchema {
+func parseExtMysql(message *descriptorpb.DescriptorProto) *cddext.Mysql {
 	if message.Options == nil {
 		return nil
-	} else if !proto.HasExtension(message.Options, cddext.E_Dbschema) {
+	} else if !proto.HasExtension(message.Options, cddext.E_Mysql) {
 		return nil
 	}
 
-	ext := proto.GetExtension(message.Options, cddext.E_Dbschema)
-	opts, ok := ext.(*cddext.DBSchema)
+	ext := proto.GetExtension(message.Options, cddext.E_Mysql)
+	opts, ok := ext.(*cddext.Mysql)
 	if !ok {
-		log.Println(fmt.Errorf("[parseExtDBSchema] extension is %T; want an DBSchema", ext))
+		log.Println(fmt.Errorf("[parseExtMysql] extension is %T; want an Mysql", ext))
 		return nil
 	}
 	return opts

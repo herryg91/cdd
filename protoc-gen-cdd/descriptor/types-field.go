@@ -14,7 +14,7 @@ type FieldDescriptorExt struct {
 	*descriptorpb.FieldDescriptorProto
 	Repository      *DescriptorRepository
 	MessageExt      *MessageDescriptorExt
-	DBField         *cddext.DBField
+	MysqlField      *cddext.MysqlField
 	ValidationRules []string
 	DefaultValueExt string
 }
@@ -24,15 +24,15 @@ func (FieldDescriptorExt) New(msgext *MessageDescriptorExt, field *descriptorpb.
 		FieldDescriptorProto: field,
 		Repository:           msgext.Repository,
 		MessageExt:           msgext,
-		DBField:              nil,
+		MysqlField:           nil,
 		ValidationRules:      []string{},
 		DefaultValueExt:      "",
 	}
-	fieldext.DBField = parseExtDBField(field)
-	if fieldext.DBField == nil {
-		fieldext.DBField = &cddext.DBField{ColumnName: fieldext.GetJsonName(), PrimaryKey: false, ColumnType: ""}
-	} else if fieldext.DBField.ColumnName == "" {
-		fieldext.DBField.ColumnName = fieldext.GetJsonName()
+	fieldext.MysqlField = parseExtMysqlField(field)
+	if fieldext.MysqlField == nil {
+		fieldext.MysqlField = &cddext.MysqlField{ColumnName: fieldext.GetJsonName(), PrimaryKey: false, ColumnType: ""}
+	} else if fieldext.MysqlField.ColumnName == "" {
+		fieldext.MysqlField.ColumnName = fieldext.GetJsonName()
 	}
 
 	validationRule := parseExtFieldValidation(field)
@@ -49,21 +49,37 @@ func (fieldext *FieldDescriptorExt) GetIdentifier() string {
 	return fieldext.MessageExt.GetIdentifier() + "." + fieldext.GetName()
 }
 
-func parseExtDBField(field *descriptorpb.FieldDescriptorProto) *cddext.DBField {
+func parseExtMysqlField(field *descriptorpb.FieldDescriptorProto) *cddext.MysqlField {
 	if field.Options == nil {
 		return nil
-	} else if !proto.HasExtension(field.Options, cddext.E_Dbfield) {
+	} else if !proto.HasExtension(field.Options, cddext.E_MysqlField) {
 		return nil
 	}
 
-	ext := proto.GetExtension(field.Options, cddext.E_Dbfield)
-	opts, ok := ext.(*cddext.DBField)
+	ext := proto.GetExtension(field.Options, cddext.E_MysqlField)
+	opts, ok := ext.(*cddext.MysqlField)
 	if !ok {
-		log.Println(fmt.Errorf("[parseExtDBField] extension is %T; want an DBField", ext))
+		log.Println(fmt.Errorf("[parseExtMysqlField] extension is %T; want an MysqlField", ext))
 		return nil
 	}
 	return opts
 }
+
+// func parseExtDBField(field *descriptorpb.FieldDescriptorProto) *cddext.DBField {
+// 	if field.Options == nil {
+// 		return nil
+// 	} else if !proto.HasExtension(field.Options, cddext.E_Dbfield) {
+// 		return nil
+// 	}
+
+// 	ext := proto.GetExtension(field.Options, cddext.E_Dbfield)
+// 	opts, ok := ext.(*cddext.DBField)
+// 	if !ok {
+// 		log.Println(fmt.Errorf("[parseExtDBField] extension is %T; want an DBField", ext))
+// 		return nil
+// 	}
+// 	return opts
+// }
 
 func parseExtFieldValidation(field *descriptorpb.FieldDescriptorProto) string {
 	if field.Options == nil {
