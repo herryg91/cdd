@@ -5,15 +5,15 @@ import (
 	"github.com/herryg91/cdd/protoc-gen-cdd/generator"
 )
 
-type CRUDGeneratorTemplate struct {
+type ScaffoldMysqlGeneratorTemplate struct {
 	name         string
 	goModuleName string
 	descriptor   *descriptor.Descriptor
 }
 
-func New(d *descriptor.Descriptor, goModuleName string) *CRUDGeneratorTemplate {
-	result := &CRUDGeneratorTemplate{
-		name:         "crud",
+func New(d *descriptor.Descriptor, goModuleName string) *ScaffoldMysqlGeneratorTemplate {
+	result := &ScaffoldMysqlGeneratorTemplate{
+		name:         "scaffold-mysql",
 		descriptor:   d,
 		goModuleName: goModuleName,
 	}
@@ -21,7 +21,7 @@ func New(d *descriptor.Descriptor, goModuleName string) *CRUDGeneratorTemplate {
 	return result
 }
 
-func (t *CRUDGeneratorTemplate) Generate() ([]*generator.GeneratorResponseFile, error) {
+func (t *ScaffoldMysqlGeneratorTemplate) Generate() ([]*generator.GeneratorResponseFile, error) {
 	var files []*generator.GeneratorResponseFile
 	for _, f := range t.descriptor.FileToGenerate {
 		entities := []ScaffoldMysql{}
