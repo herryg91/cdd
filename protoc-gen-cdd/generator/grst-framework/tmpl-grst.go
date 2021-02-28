@@ -38,6 +38,7 @@ var (
 				
 		"github.com/mcuadros/go-defaults"
 		"google.golang.org/grpc/codes"
+		"google.golang.org/grpc/credentials"
 		"gopkg.in/validator.v2"
 	)
 
@@ -100,15 +101,19 @@ var (
 		grpcRestServer.RegisterRestHandler(Register{{$svcName}}Handler)
 	}
 
-	func New{{$svcName}}GrstClient(serverHost string) ({{$svcName}}Client, error) {
+	func New{{$svcName}}GrstClient(serverHost string, creds *credentials.TransportCredentials, dialOpts ...grpc.DialOption) ({{$svcName}}Client, error) {
 		opts := []grpc.DialOption{}
+		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1024*1024*20)))
 		opts = append(opts, grpc.WithMaxMsgSize(1024*1024*20))
-		// opts = append(opts, grpc.WithTransportCredentials(creds))
-		opts = append(opts, grpc.WithInsecure())
+		if creds == nil {
+			opts = append(opts, grpc.WithInsecure())
+		} else {
+			opts = append(opts, grpc.WithTransportCredentials(*creds))
+		}
+		opts = append(opts, dialOpts...)
 		grpcConn, err := grpc.Dial(serverHost, opts...)
 		return New{{$svcName}}Client(grpcConn), err
 	}
-
 	`))
 )
 
