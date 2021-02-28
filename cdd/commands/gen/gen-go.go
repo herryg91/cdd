@@ -33,10 +33,10 @@ func NewGenGoCmd() *GenGoCmd {
 }
 
 type ContractToGenerate struct {
-	protoInput    string
-	outputGrstDir string
-	outputCrudDir string
-	generateCrud  bool
+	protoInput             string
+	outputGrstDir          string
+	outputScaffoldMysqlDir string
+	scaffoldMysql          bool
 }
 
 func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
@@ -45,7 +45,7 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	outputGrst := svcYaml.Contract.Config.OutputGrst
-	outputCrud := svcYaml.Contract.Config.OutputCrud
+	outputScaffoldMysql := svcYaml.Contract.Config.OutputScaffoldMysql
 	outputDependency := svcYaml.Contract.Config.OutputDependency
 	if outputGrst == "" {
 		outputGrst = "grpc/pb/"
@@ -58,10 +58,10 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 	// Setup proto contract for main service
 	for _, file := range svcYaml.Contract.ProtoFiles {
 		contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-			protoInput:    file,
-			outputGrstDir: outputGrst,
-			outputCrudDir: outputCrud,
-			generateCrud:  true})
+			protoInput:             file,
+			outputGrstDir:          outputGrst,
+			outputScaffoldMysqlDir: outputScaffoldMysql,
+			scaffoldMysql:          true})
 	}
 
 	// Setup proto contract for dependencies services
@@ -75,10 +75,10 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 
 		for _, file := range svcYamlDependency.Contract.ProtoFiles {
 			contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-				protoInput:    dirDependency + "/" + file,
-				outputGrstDir: outputDependency,
-				outputCrudDir: outputCrud,
-				generateCrud:  false})
+				protoInput:             dirDependency + "/" + file,
+				outputGrstDir:          outputDependency,
+				outputScaffoldMysqlDir: outputScaffoldMysql,
+				scaffoldMysql:          false})
 		}
 	}
 	// generate grpc pb
@@ -104,8 +104,8 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if ctg.generateCrud {
-			err = c.protocGenCddCli.GenerateCrud(filename, dir, ctg.outputCrudDir, currentModule)
+		if ctg.scaffoldMysql {
+			err = c.protocGenCddCli.GenerateScaffoldMysql(filename, dir, ctg.outputScaffoldMysqlDir, currentModule)
 			if err != nil {
 				return err
 			}
