@@ -6,6 +6,7 @@ import (
 	"net"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	outgoingInterceptor "github.com/herryg91/cdd/grst/interceptor/outgoing"
 	"google.golang.org/grpc"
 )
 
@@ -24,7 +25,7 @@ func (s *Server) newGrpcServer() *grpc.Server {
 	for _, i := range s.grpcServerOption.unaryServerInterceptors {
 		unaryInterceptors = append(unaryInterceptors, i)
 	}
-
+	unaryInterceptors = append(unaryInterceptors, outgoingInterceptor.UnaryServerInterceptor())
 	srv := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(unaryInterceptors...),
 		grpc.MaxRecvMsgSize(s.grpcServerOption.maxRecvMsgSize),

@@ -16,8 +16,14 @@ const (
 func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
 		md, _ := metadata.FromIncomingContext(ctx)
-		md.Set("grst."+CONTEXT_SESSION_ID.String(), uuid.New().String())
-		ctx = metadata.NewIncomingContext(ctx, md)
+		sessionIds := md.Get("grst." + CONTEXT_SESSION_ID.String())
+		if len(sessionIds) == 0 {
+			md.Set("grst."+CONTEXT_SESSION_ID.String(), uuid.New().String())
+			ctx = metadata.NewIncomingContext(ctx, md)
+		} else if sessionIds[0] == "" {
+			md.Set("grst."+CONTEXT_SESSION_ID.String(), uuid.New().String())
+			ctx = metadata.NewIncomingContext(ctx, md)
+		}
 		return handler(ctx, req)
 	}
 }

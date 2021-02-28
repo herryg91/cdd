@@ -8,6 +8,7 @@ import (
 	"github.com/herryg91/cdd/grst/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 // UnaryServerInterceptor function
@@ -25,6 +26,12 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			hostname = "unknown"
 		}
 
+		md, _ := metadata.FromIncomingContext(ctx)
+		sessionId := ""
+		if len(md.Get("grst.session.id")) > 0 {
+			sessionId = md.Get("grst.session.id")[0]
+		}
+
 		latency := time.Since(start)
 		l := logrus.WithTime(time.Now().UTC()).
 			WithField("hostname", hostname).
@@ -32,6 +39,7 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			WithField("grpc_status", grpcStatus.GRPCStatus).
 			WithField("full_method", info.FullMethod).
 			WithField("latency", latency).
+			WithField("request_id", sessionId).
 			WithField("payload", req)
 
 		if grpcStatus.HTTPStatus > 499 {
