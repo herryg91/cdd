@@ -2,12 +2,13 @@ version: 1
 lang: go
 name: location-api
 contract: 
+  config:
+    output-grst: grpc2/pb/
+    output-scaffold-mysql:  
+    output-dependency: grpc/pb-deps/
   proto-files:
     - grpc/proto/province.proto
     - grpc/proto/city.proto
-dependencies:
-  services:
-    - ../usertoken-api/service.yaml
 
 # default examples 
 # contract: 
