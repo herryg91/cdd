@@ -3,7 +3,7 @@ lang: go
 name: location-api
 contract: 
   config:
-    output-grst: grpc2/pb/
+    output-grst: grpc/pb/
     output-scaffold-mysql:  
     output-dependency: grpc/pb-deps/
   proto-files:
