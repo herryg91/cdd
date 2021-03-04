@@ -12,6 +12,7 @@ import (
 
 	"github.com/mcuadros/go-defaults"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"gopkg.in/validator.v2"
 )
 
@@ -57,11 +58,16 @@ func RegisterUsertokenAPIGrstServer(grpcRestServer *grst.Server, hndl UsertokenA
 	grpcRestServer.RegisterRestHandler(RegisterUsertokenAPIHandler)
 }
 
-func NewUsertokenAPIGrstClient(serverHost string) (UsertokenAPIClient, error) {
+func NewUsertokenAPIGrstClient(serverHost string, creds *credentials.TransportCredentials, dialOpts ...grpc.DialOption) (UsertokenAPIClient, error) {
 	opts := []grpc.DialOption{}
+	opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1024*1024*20)))
 	opts = append(opts, grpc.WithMaxMsgSize(1024*1024*20))
-	// opts = append(opts, grpc.WithTransportCredentials(creds))
-	opts = append(opts, grpc.WithInsecure())
+	if creds == nil {
+		opts = append(opts, grpc.WithInsecure())
+	} else {
+		opts = append(opts, grpc.WithTransportCredentials(*creds))
+	}
+	opts = append(opts, dialOpts...)
 	grpcConn, err := grpc.Dial(serverHost, opts...)
 	return NewUsertokenAPIClient(grpcConn), err
 }
