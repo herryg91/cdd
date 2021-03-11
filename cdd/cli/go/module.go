@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 func GetCurrentModule() (string, error) {
@@ -17,5 +18,5 @@ func GetCurrentModule() (string, error) {
 	if err != nil {
 		return "", errors.New(fmt.Sprint(err) + ": " + stderr.String())
 	}
-	return out.String(), nil
+	return strings.ReplaceAll(out.String(), "\n", ""), nil
 }
