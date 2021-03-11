@@ -50,8 +50,7 @@ func (cli *protoc) Exec(input string, printExecStatement bool) error {
 	args = append(args, input)
 	terminalCmd := exec.Command("protoc", args...)
 	if printExecStatement {
-		log.Println("protoc", args)
-		log.Println("")
+		log.Println("protoc", args, "\n")
 	}
 	terminalCmd.Stdin, terminalCmd.Stdout, terminalCmd.Stderr = os.Stdin, os.Stdout, os.Stderr
 	return terminalCmd.Run()
