@@ -31,8 +31,7 @@ func (pgc *ProtocGenCdd) GenerateGrst(protoFilename string, inputPath string, ou
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "go-grpc", Opts: map[string]string{}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "grpc-gateway", Opts: map[string]string{"logtostderr": "true", "generate_unbound_methods": "true"}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
 
-	// fmt.Println("Run protoc-gen-cdd type=grst", "| in = "+inputPath+" | out ="+outputPath)
-	log.Println("Generating file [type=grst]: " + inputPath + " | out" + outputPath)
+	log.Println("Generating file [type=grst]: " + inputPath + protoFilename + " | outpath: ./" + outputPath)
 	err := p.Exec(filepath.Base(protoFilename), printLog)
 	if err != nil {
 		return err
@@ -47,8 +46,8 @@ func (pgc *ProtocGenCdd) GenerateScaffoldMysql(protoFilename string, inputPath s
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/cddapis/")
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/googleapis/")
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "cdd", Opts: map[string]string{"type": "scaffold-mysql", "go-module-name": goModuleName}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
-	// fmt.Println("Run protoc-gen-cdd type=scaffold-mysql", "| in = "+inputPath+" | out ="+outputPath)
-	log.Println("Generating file [type=scaffold-mysql]: " + inputPath + " | out" + outputPath)
+
+	log.Println("Generating file [type=scaffold-mysql]: " + inputPath + protoFilename + " | outpath: ./" + outputPath)
 	err := p.Exec(filepath.Base(protoFilename), printLog)
 	if err != nil {
 		return err
