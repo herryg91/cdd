@@ -37,4 +37,5 @@ message MysqlField {
   string column_name = 120001;
   bool primary_key = 120002;
   string column_type  = 120003;
+  bool nullable = 120004;
 }

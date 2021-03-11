@@ -34,7 +34,7 @@ var (
 	// Mysql Table: {{.Mysql.TableName}}
 	type {{.GetName}} struct {
 		{{- range $fext := .FieldExt}}
-		{{$fext.GetName}} {{getGoStandartType $fext}} ` + "`" + `gorm:"{{getGormTagAttribute $fext}}"` + "`" + `
+		{{$fext.GetName}} {{ if $fext.MysqlField.Nullable }}*{{ end }}{{getGoStandartType $fext}} ` + "`" + `gorm:"{{getGormTagAttribute $fext}}"` + "`" + `
 		{{- end}}
 		
 		{{if not .Mysql.DisableTimestampTracking}}
