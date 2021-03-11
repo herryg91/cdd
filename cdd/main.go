@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/herryg91/cdd/cdd/commands/doctor"
@@ -15,9 +13,7 @@ func main() {
 	rootCmd.AddCommand(gen.NewGenCmd().Command)
 	rootCmd.AddCommand(doctor.NewDoctorCmd().Command)
 	// execute
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	rootCmd.Execute()
+
 	time.Sleep(time.Second)
 }

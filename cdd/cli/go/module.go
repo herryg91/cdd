@@ -1,13 +1,21 @@
 package gocli
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
 	"os/exec"
-	"strings"
 )
 
 func GetCurrentModule() (string, error) {
-	terminalCmd := exec.Command(`go`, "list", "-m")
-	result, err := terminalCmd.Output()
-	resultStr := strings.Replace(string(result), "\n", "", -1)
-	return resultStr, err
+	cmd := exec.Command(`go`, "list", "-m")
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		return "", errors.New(fmt.Sprint(err) + ": " + stderr.String())
+	}
+	return out.String(), nil
 }

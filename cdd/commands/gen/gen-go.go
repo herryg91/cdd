@@ -3,8 +3,6 @@ package gen
 import (
 	"path/filepath"
 
-	"github.com/gosuri/uiprogress"
-	"github.com/gosuri/uiprogress/util/strutil"
 	gocli "github.com/herryg91/cdd/cdd/cli/go"
 	protocgencdd "github.com/herryg91/cdd/cdd/cli/protoc-gen-cdd"
 	"github.com/herryg91/cdd/cdd/cli/serviceYaml"
@@ -15,6 +13,7 @@ type GenGoCmd struct {
 	Command         *cobra.Command
 	protocGenCddCli *protocgencdd.ProtocGenCdd
 	serviceYamlFile string
+	printLog        bool
 }
 
 func NewGenGoCmd() *GenGoCmd {
@@ -29,6 +28,7 @@ func NewGenGoCmd() *GenGoCmd {
 	}
 	c.Command.RunE = c.runCommand
 	c.Command.Flags().StringVar(&c.serviceYamlFile, "service-yaml", "service.yaml", "service.yaml file path")
+	c.Command.Flags().BoolVar(&c.printLog, "print", false, "print log")
 	return c
 }
 
@@ -82,16 +82,6 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 	// generate grpc pb
-	uiprogress.Start()
-	bar := uiprogress.AddBar(len(contractsToGenerate)).AppendCompleted().PrependElapsed()
-	bar.Width = 50
-	bar.PrependFunc(func(b *uiprogress.Bar) string {
-		if b.Current() < len(contractsToGenerate) && b.Current() >= 0 {
-			return strutil.Resize("Generating "+contractsToGenerate[b.Current()].protoInput, 30)
-		} else {
-			return strutil.Resize("done", 30)
-		}
-	})
 	for _, ctg := range contractsToGenerate {
 		currentModule, err := gocli.GetCurrentModule()
 		if err != nil {
@@ -99,20 +89,19 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 		}
 
 		dir, filename := filepath.Split(ctg.protoInput)
-		err = c.protocGenCddCli.GenerateGrst(filename, dir, ctg.outputGrstDir)
+
+		err = c.protocGenCddCli.GenerateGrst(filename, dir, ctg.outputGrstDir, c.printLog)
 		if err != nil {
 			return err
 		}
 
 		if ctg.scaffoldMysql {
-			err = c.protocGenCddCli.GenerateScaffoldMysql(filename, dir, ctg.outputScaffoldMysqlDir, currentModule)
+			err = c.protocGenCddCli.GenerateScaffoldMysql(filename, dir, ctg.outputScaffoldMysqlDir, currentModule, c.printLog)
 			if err != nil {
 				return err
 			}
 		}
-		bar.Incr()
 	}
-	bar.Incr()
 
 	return nil
 }
