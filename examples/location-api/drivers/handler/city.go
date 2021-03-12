@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	pbCity "github.com/herryg91/cdd/examples/location-api/grpc/pb/city"
+	pbCity "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/city"
 	crud_tbl_city "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_city"
 	search_usecase "github.com/herryg91/cdd/examples/location-api/usecase/search"
 	grst_errors "github.com/herryg91/cdd/grst/errors"

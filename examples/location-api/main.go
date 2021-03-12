@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/herryg91/cdd/examples/location-api/config"
-	"github.com/herryg91/cdd/examples/location-api/datasource/mysql/tbl_city"
-	"github.com/herryg91/cdd/examples/location-api/datasource/mysql/tbl_province"
-	pbCity "github.com/herryg91/cdd/examples/location-api/grpc/pb/city"
-	pbProvince "github.com/herryg91/cdd/examples/location-api/grpc/pb/province"
-	"github.com/herryg91/cdd/examples/location-api/handler"
+	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_city"
+	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_province"
+	"github.com/herryg91/cdd/examples/location-api/drivers/handler"
+	pbCity "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/city"
+	pbProvince "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/province"
 	crud_tbl_city "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_city"
 	crud_tbl_province "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_province"
 	search_usecase "github.com/herryg91/cdd/examples/location-api/usecase/search"

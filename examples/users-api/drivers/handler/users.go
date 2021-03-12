@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	pbUsers "github.com/herryg91/cdd/examples/users-api/grpc/pb/users"
+	pbUsers "github.com/herryg91/cdd/examples/users-api/drivers/handler/grst/users"
 	profile_usecase "github.com/herryg91/cdd/examples/users-api/usecase/profile"
 	grst_errors "github.com/herryg91/cdd/grst/errors"
 	"google.golang.org/grpc/codes"

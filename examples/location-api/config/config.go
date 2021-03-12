@@ -5,7 +5,7 @@ import (
 )
 
 type Config struct {
-	ServiceName string `envconfig:"service_name" default:"location.api"`
+	ServiceName string `envconfig:"service_name" default:"location-api"`
 	Environment string `envconfig:"environment" default:"dev"`
 	Maintenance bool   `envconfig:"maintenance" default:"false"`
 	RestPort    int    `envconfig:"rest_port" default:"18080" required:"true"`
@@ -22,5 +22,6 @@ type Config struct {
 func New() Config {
 	cfg := Config{}
 	envconfig.MustProcess("", &cfg)
+
 	return cfg
 }

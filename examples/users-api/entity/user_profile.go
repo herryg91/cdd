@@ -1,7 +1,7 @@
 package entity
 
 import (
-	pbUsers "github.com/herryg91/cdd/examples/users-api/grpc/pb/users"
+	pbUsers "github.com/herryg91/cdd/examples/users-api/drivers/handler/grst/users"
 )
 
 type UserProfile struct {

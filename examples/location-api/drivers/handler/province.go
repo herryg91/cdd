@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/ptypes/empty"
-	pbProvince "github.com/herryg91/cdd/examples/location-api/grpc/pb/province"
+	pbProvince "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/province"
 	crud_tbl_province "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_province"
 	grst_errors "github.com/herryg91/cdd/grst/errors"
 	"google.golang.org/grpc/codes"

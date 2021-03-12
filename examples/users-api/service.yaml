@@ -3,7 +3,7 @@ lang: go
 name: users-api
 contract: 
   proto-files:
-    - grpc/proto/users.proto
+    - contract/users.proto
 dependencies:
   services:
     - ../location-api/service.yaml
@@ -11,10 +11,10 @@ dependencies:
 # default examples 
 # contract: 
 #   config:
-#     output-grst: grpc/pb/
+#     output-grst: drivers/handler/grst/
 #     output-scaffold-mysql:  
-#     output-dependency: grpc/pb-deps/
+#     output-dependency: drivers/external/grst/
 #   proto-files:
-#     - grpc/proto/province.proto
+#     - contract/province.proto
 
 # export GO111MODULE=on && export GOPROXY=direct && export GOSUMDB=off && go mod tidy

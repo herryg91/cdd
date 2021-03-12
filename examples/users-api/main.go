@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/herryg91/cdd/examples/users-api/config"
-	"github.com/herryg91/cdd/examples/users-api/datasource/mysql/tbl_users"
-	pbProvince "github.com/herryg91/cdd/examples/users-api/grpc/pb-deps/province"
-	pbUsers "github.com/herryg91/cdd/examples/users-api/grpc/pb/users"
-	"github.com/herryg91/cdd/examples/users-api/handler"
+	"github.com/herryg91/cdd/examples/users-api/drivers/datasource/mysql/tbl_users"
+	pbProvince "github.com/herryg91/cdd/examples/users-api/drivers/external/grst/province"
+	"github.com/herryg91/cdd/examples/users-api/drivers/handler"
+	pbUsers "github.com/herryg91/cdd/examples/users-api/drivers/handler/grst/users"
 	profile_usecase "github.com/herryg91/cdd/examples/users-api/usecase/profile"
 	"github.com/herryg91/cdd/grst"
 	loggerInterceptor "github.com/herryg91/cdd/grst/interceptor/logger"

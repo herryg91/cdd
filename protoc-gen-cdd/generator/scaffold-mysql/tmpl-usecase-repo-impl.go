@@ -20,7 +20,7 @@ var (
 		"github.com/jinzhu/gorm"
 		_ "github.com/jinzhu/gorm/dialects/mysql"
 		"{{.GoModuleName}}/entity"
-		{{.Mysql.TableName}}_ds "{{.GoModuleName}}/datasource/mysql/{{.Mysql.TableName}}"
+		{{.Mysql.TableName}}_ds "{{.GoModuleName}}/drivers/datasource/mysql/{{.Mysql.TableName}}"
 	)
 	type repository struct {
 		db     *gorm.DB

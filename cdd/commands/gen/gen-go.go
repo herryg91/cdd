@@ -39,6 +39,9 @@ type ContractToGenerate struct {
 	scaffoldMysql          bool
 }
 
+const defaultOutputGrst = "drivers/handler/grst/"
+const defaultOutputDependency = "drivers/external/grst/"
+
 func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 	svcYaml, err := serviceYaml.GetServiceYAML(c.serviceYamlFile)
 	if err != nil {
@@ -48,10 +51,10 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 	outputScaffoldMysql := svcYaml.Contract.Config.OutputScaffoldMysql
 	outputDependency := svcYaml.Contract.Config.OutputDependency
 	if outputGrst == "" {
-		outputGrst = "grpc/pb/"
+		outputGrst = defaultOutputGrst
 	}
 	if outputDependency == "" {
-		outputDependency = "grpc/pb-deps/"
+		outputDependency = defaultOutputDependency
 	}
 
 	contractsToGenerate := []ContractToGenerate{}

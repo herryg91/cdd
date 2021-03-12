@@ -4,7 +4,7 @@ package crud_tbl_city
 
 import (
 	"fmt"
-	tbl_city_ds "github.com/herryg91/cdd/examples/location-api/datasource/mysql/tbl_city"
+	tbl_city_ds "github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_city"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"

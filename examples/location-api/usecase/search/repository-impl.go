@@ -3,8 +3,8 @@ package search_usecase
 import (
 	"fmt"
 
-	"github.com/herryg91/cdd/examples/location-api/datasource/mysql/tbl_city"
-	"github.com/herryg91/cdd/examples/location-api/datasource/mysql/tbl_province"
+	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_city"
+	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_province"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )

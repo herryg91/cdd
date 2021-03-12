@@ -24,5 +24,6 @@ type Config struct {
 func New() Config {
 	cfg := Config{}
 	envconfig.MustProcess("", &cfg)
+
 	return cfg
 }

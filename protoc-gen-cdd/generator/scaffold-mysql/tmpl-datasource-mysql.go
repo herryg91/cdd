@@ -89,7 +89,7 @@ func applyTemplateRepoMysql(sm ScaffoldMysql) (*generator.GeneratorResponseFile,
 	}
 
 	return &generator.GeneratorResponseFile{
-		Filename:     "datasource/mysql/" + sm.Mysql.TableName + "/" + sm.Mysql.TableName + ".cdd.go",
+		Filename:     "drivers/datasource/mysql/" + sm.Mysql.TableName + "/" + sm.Mysql.TableName + ".cdd.go",
 		Content:      string(formatted),
 		GoImportPath: protogen.GoImportPath(""),
 	}, nil
