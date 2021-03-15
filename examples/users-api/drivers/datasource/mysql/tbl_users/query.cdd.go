@@ -4,7 +4,6 @@
 package tbl_users
 
 import (
-	"github.com/herryg91/cdd/examples/users-api/entity"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"time"
@@ -19,22 +18,22 @@ func NewMysqlDatasource(db *gorm.DB) *MysqlDatasource {
 	return &MysqlDatasource{db, "tbl_users"}
 }
 
-func (r *MysqlDatasource) GetByPrimaryKey(id int) (*entity.User, error) {
-	result := &entity.User{}
+func (r *MysqlDatasource) GetByPrimaryKey(id int) (*UserModel, error) {
+	result := &UserModel{}
 	err := r.db.Table(r.tableName).Where("id = ?", id).Scan(&result).Error
 	return result, err
 }
 
-func (r *MysqlDatasource) GetAll() ([]*entity.User, error) {
-	result := []*entity.User{}
+func (r *MysqlDatasource) GetAll() ([]*UserModel, error) {
+	result := []*UserModel{}
 	err := r.db.Table(r.tableName).Find(&result).Error
 	return result, err
 }
 
-func (r *MysqlDatasource) Create(in entity.User) (*entity.User, error) {
-
-	in.CreatedAt = time.Now()
-	in.UpdatedAt = time.Now()
+func (r *MysqlDatasource) Create(in UserModel) (*UserModel, error) {
+	timeNow := time.Now()
+	in.CreatedAt = &timeNow
+	in.UpdatedAt = &timeNow
 
 	err := r.db.Table(r.tableName).Create(&in).Error
 	if err != nil {
@@ -43,8 +42,10 @@ func (r *MysqlDatasource) Create(in entity.User) (*entity.User, error) {
 	return &in, nil
 }
 
-func (r *MysqlDatasource) Update(in entity.User) (*entity.User, error) {
-	in.UpdatedAt = time.Now()
+func (r *MysqlDatasource) Update(in UserModel) (*UserModel, error) {
+	timeNow := time.Now()
+	in.CreatedAt = nil
+	in.UpdatedAt = &timeNow
 	err := r.db.Table(r.tableName).Where("id = ?", in.Id).Updates(&in).Error
 	if err != nil {
 		return nil, err
@@ -53,5 +54,5 @@ func (r *MysqlDatasource) Update(in entity.User) (*entity.User, error) {
 }
 
 func (r *MysqlDatasource) Delete(id int) error {
-	return r.db.Table(r.tableName).Delete(&entity.User{}, "id = ?", id).Error
+	return r.db.Table(r.tableName).Delete(&UserModel{}, "id = ?", id).Error
 }

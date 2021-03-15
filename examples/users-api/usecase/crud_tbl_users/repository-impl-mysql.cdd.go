@@ -26,28 +26,32 @@ func (r *repository) GetByPrimaryKey(id int) (*entity.User, error) {
 		}
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToUserEntity(), err
 }
 func (r *repository) GetAll() ([]*entity.User, error) {
-	out, err := r.ds.GetAll()
+	datas, err := r.ds.GetAll()
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
+	}
+	out := []*entity.User{}
+	for _, data := range datas {
+		out = append(out, data.ToUserEntity())
 	}
 	return out, err
 }
 func (r *repository) Create(in entity.User) (*entity.User, error) {
-	out, err := r.ds.Create(in)
+	out, err := r.ds.Create(*tbl_users_ds.UserModel{}.FromUserEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToUserEntity(), err
 }
 func (r *repository) Update(in entity.User) (*entity.User, error) {
-	out, err := r.ds.Update(in)
+	out, err := r.ds.Update(*tbl_users_ds.UserModel{}.FromUserEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToUserEntity(), err
 }
 func (r *repository) Delete(id int) error {
 	err := r.ds.Delete(id)
@@ -56,3 +60,22 @@ func (r *repository) Delete(id int) error {
 	}
 	return err
 }
+
+/*
+	// Add this in drivers/datasource/mysql/tbl_users/{any_file}.go
+
+	func (model *UserModel) ToUserEntity() *entity.User {
+		return &entity.User{
+			Id:model.Id,
+			Name:model.Name,
+			ProvinceId:model.ProvinceId,
+		}
+	}
+	func (UserModel) FromUserEntity(in entity.User) *UserModel {
+		return &UserModel{
+			Id:in.Id,
+			Name:in.Name,
+			ProvinceId:in.ProvinceId,
+		}
+	}
+*/

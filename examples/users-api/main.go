@@ -19,7 +19,7 @@ import (
 func main() {
 	cfg := config.New()
 
-	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPass, cfg.DBDatabaseName, cfg.DBLogMode)
+	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPassword, cfg.DBDatabaseName, cfg.DBLogMode)
 	if err != nil {
 		logrus.Panicln("Failed to Initialized mysql DB:", err)
 	}

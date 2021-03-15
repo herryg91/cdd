@@ -20,7 +20,7 @@ message GetProfileReq {
 
 message User {
     option (cdd.api.mysql) = {
-        scaffold: true,
+        db_model: true,
         table_name: "tbl_users",
         disable_timestamp_tracking: false,
         enable_soft_delete: false

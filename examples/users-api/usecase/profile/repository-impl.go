@@ -35,6 +35,6 @@ func (r *repository) GetProfile(ctx context.Context, id int) (*entity.UserProfil
 		return nil, fmt.Errorf("%w: %s - %s", ErrClient, "location-api (province)", err.Error())
 	}
 
-	out := entity.UserProfile{}.FromUser(*user, provinceResp.Name)
+	out := entity.UserProfile{}.FromUser(*user.ToUserEntity(), provinceResp.Name)
 	return &out, err
 }

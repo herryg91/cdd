@@ -12,9 +12,13 @@ dependencies:
 # contract: 
 #   config:
 #     output-grst: drivers/handler/grst/
-#     output-scaffold-mysql:  
+#     output-mysql-model: drivers/datasource/mysql/
 #     output-dependency: drivers/external/grst/
 #   proto-files:
 #     - contract/province.proto
 
-# export GO111MODULE=on && export GOPROXY=direct && export GOSUMDB=off && go mod tidy
+# cdd gen go
+# cdd gen go-entity -f users.proto -e "UserProfile|User"
+# cdd gen go-ucm -f users.proto -n User
+# combine: cdd gen go && cdd gen go-entity -f users.proto -e "UserProfile|User" && cdd gen go-ucm -f users.proto -n User 
+ 
