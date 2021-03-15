@@ -3,9 +3,8 @@ package gen
 import (
 	"path/filepath"
 
-	gocli "github.com/herryg91/cdd/cdd/cli/go"
 	protocgencdd "github.com/herryg91/cdd/cdd/cli/protoc-gen-cdd"
-	"github.com/herryg91/cdd/cdd/cli/serviceYaml"
+	"github.com/herryg91/cdd/cdd/pkg/serviceYaml"
 	"github.com/spf13/cobra"
 )
 
@@ -33,12 +32,13 @@ func NewGenGoCmd() *GenGoCmd {
 }
 
 type ContractToGenerate struct {
-	protoInput             string
-	outputGrstDir          string
-	outputScaffoldMysqlDir string
-	scaffoldMysql          bool
+	protoInput          string
+	outputGrstDir       string
+	outputMysqlModelDir string
+	mysqlModel          bool
 }
 
+const defaultOutputMysqlModel = "drivers/datasource/mysql/"
 const defaultOutputGrst = "drivers/handler/grst/"
 const defaultOutputDependency = "drivers/external/grst/"
 
@@ -48,7 +48,7 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	outputGrst := svcYaml.Contract.Config.OutputGrst
-	outputScaffoldMysql := svcYaml.Contract.Config.OutputScaffoldMysql
+	outputMysqlModel := svcYaml.Contract.Config.OutputMysqlModel
 	outputDependency := svcYaml.Contract.Config.OutputDependency
 	if outputGrst == "" {
 		outputGrst = defaultOutputGrst
@@ -56,15 +56,19 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 	if outputDependency == "" {
 		outputDependency = defaultOutputDependency
 	}
+	if outputMysqlModel == "" {
+		outputMysqlModel = defaultOutputMysqlModel
+	}
 
 	contractsToGenerate := []ContractToGenerate{}
 	// Setup proto contract for main service
 	for _, file := range svcYaml.Contract.ProtoFiles {
 		contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-			protoInput:             file,
-			outputGrstDir:          outputGrst,
-			outputScaffoldMysqlDir: outputScaffoldMysql,
-			scaffoldMysql:          true})
+			protoInput:          file,
+			outputGrstDir:       outputGrst,
+			outputMysqlModelDir: outputMysqlModel,
+			mysqlModel:          true,
+		})
 	}
 
 	// Setup proto contract for dependencies services
@@ -78,28 +82,23 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 
 		for _, file := range svcYamlDependency.Contract.ProtoFiles {
 			contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-				protoInput:             dirDependency + "/" + file,
-				outputGrstDir:          outputDependency,
-				outputScaffoldMysqlDir: outputScaffoldMysql,
-				scaffoldMysql:          false})
+				protoInput:          dirDependency + "/" + file,
+				outputGrstDir:       outputDependency,
+				outputMysqlModelDir: outputMysqlModel,
+				mysqlModel:          false,
+			})
 		}
 	}
 	// generate grpc pb
 	for _, ctg := range contractsToGenerate {
-		currentModule, err := gocli.GetCurrentModule()
-		if err != nil {
-			return err
-		}
-
 		dir, filename := filepath.Split(ctg.protoInput)
-
 		err = c.protocGenCddCli.GenerateGrst(filename, dir, ctg.outputGrstDir, c.printLog)
 		if err != nil {
 			return err
 		}
 
-		if ctg.scaffoldMysql {
-			err = c.protocGenCddCli.GenerateScaffoldMysql(filename, dir, ctg.outputScaffoldMysqlDir, currentModule, c.printLog)
+		if ctg.mysqlModel {
+			err = c.protocGenCddCli.GenerateMysqlModel(filename, dir, ctg.outputMysqlModelDir, c.printLog)
 			if err != nil {
 				return err
 			}

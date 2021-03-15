@@ -16,5 +16,8 @@ func NewGenCmd() *GenCmd {
 		Long:  "Generate contract driven development (cdd) grst & crud template based on service.yaml through protoc-gen-cdd",
 	}
 	c.AddCommand(NewGenGoCmd().Command)
+	c.AddCommand(NewGenGoEntityCmd().Command)
+	c.AddCommand(NewGenGoUsecaseCmd().Command)
+	c.AddCommand(NewGenGoUsecaseMysqlCmd().Command)
 	return c
 }

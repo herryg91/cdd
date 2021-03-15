@@ -14,9 +14,9 @@ type Contract struct {
 }
 
 type ContractConfig struct {
-	OutputGrst          string `yaml:"output-grst"`
-	OutputScaffoldMysql string `yaml:"output-scaffold-mysql"`
-	OutputDependency    string `yaml:"output-dependency"`
+	OutputGrst       string `yaml:"output-grst"`
+	OutputMysqlModel string `yaml:"output-mysql-model"`
+	OutputDependency string `yaml:"output-dependency"`
 }
 
 type Dependency struct {
