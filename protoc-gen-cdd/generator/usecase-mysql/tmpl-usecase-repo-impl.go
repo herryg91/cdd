@@ -71,6 +71,25 @@ var (
 		}
 		return err
 	}
+
+	/*
+	// Add this in drivers/datasource/mysql/{{.Mysql.TableName}}/{any_file}.go
+	
+	func (model *{{.GetName}}Model) To{{.GetName}}Entity() *entity.{{.GetName}} {
+		return &entity.{{.GetName}}{ 
+			{{- range $fext := .FieldExt}}
+			{{$fext.GetName}}:model.{{$fext.GetName}},
+			{{- end}}
+		}
+	}
+	func ({{.GetName}}Model) From{{.GetName}}Entity(in entity.{{.GetName}}) *{{.GetName}}Model {
+		return &{{.GetName}}Model{ 
+			{{- range $fext := .FieldExt}}
+			{{$fext.GetName}}:in.{{$fext.GetName}},
+			{{- end}}
+		}
+	}
+	*/
 	`))
 )
 
