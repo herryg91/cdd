@@ -36,7 +36,7 @@ func (MessageDescriptorExt) New(fext *FileDescriptorExt, msg *descriptorpb.Descr
 
 	msgext.Mysql = parseExtMysql(msg)
 	if msgext.Mysql == nil {
-		msgext.Mysql = &cddext.Mysql{Scaffold: false, TableName: strings.Replace(strcase.ToKebab(msgext.GetName()), "-", "_", -1), EnableSoftDelete: false, DisableTimestampTracking: true}
+		msgext.Mysql = &cddext.Mysql{TableName: strings.Replace(strcase.ToKebab(msgext.GetName()), "-", "_", -1), EnableSoftDelete: false, DisableTimestampTracking: true}
 	}
 
 	return msgext

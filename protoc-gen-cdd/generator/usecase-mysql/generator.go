@@ -1,19 +1,24 @@
-package scaffold_mysql
+package usecase_mysql
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/herryg91/cdd/protoc-gen-cdd/descriptor"
 	"github.com/herryg91/cdd/protoc-gen-cdd/generator"
 )
 
 type ScaffoldMysqlGeneratorTemplate struct {
 	name         string
+	modelName    string
 	goModuleName string
 	descriptor   *descriptor.Descriptor
 }
 
-func New(d *descriptor.Descriptor, goModuleName string) *ScaffoldMysqlGeneratorTemplate {
+func New(d *descriptor.Descriptor, modelName string, goModuleName string) *ScaffoldMysqlGeneratorTemplate {
 	result := &ScaffoldMysqlGeneratorTemplate{
-		name:         "scaffold-mysql",
+		name:         "usecase-mysql",
+		modelName:    modelName,
 		descriptor:   d,
 		goModuleName: goModuleName,
 	}
@@ -24,12 +29,13 @@ func New(d *descriptor.Descriptor, goModuleName string) *ScaffoldMysqlGeneratorT
 func (t *ScaffoldMysqlGeneratorTemplate) Generate() ([]*generator.GeneratorResponseFile, error) {
 	var files []*generator.GeneratorResponseFile
 	for _, f := range t.descriptor.FileToGenerate {
-		entities := []ScaffoldMysql{}
 		for _, mext := range f.MessageExt {
-			if !mext.Mysql.Scaffold {
+			if mext.GetName() != t.modelName {
+				continue
+			} else if !mext.Mysql.DbModel {
+				log.Println(fmt.Sprintf("[Warning] `%s` was found, but db_model: false", t.modelName))
 				continue
 			}
-			entities = append(entities, ScaffoldMysql{mext, t.goModuleName})
 
 			fileUseCaseErrors, err := applyTemplateUseCaseErrors(ScaffoldMysql{mext, t.goModuleName})
 			if err != nil {
@@ -43,12 +49,6 @@ func (t *ScaffoldMysqlGeneratorTemplate) Generate() ([]*generator.GeneratorRespo
 			}
 			files = append(files, fileUseCaseIntf)
 
-			fileRepoMysql, err := applyTemplateRepoMysql(ScaffoldMysql{mext, t.goModuleName})
-			if err != nil {
-				return nil, err
-			}
-			files = append(files, fileRepoMysql)
-
 			fileUseCaseRepoImpl, err := applyTemplateUseCaseRepoImpl(ScaffoldMysql{mext, t.goModuleName})
 			if err != nil {
 				return nil, err
@@ -60,13 +60,6 @@ func (t *ScaffoldMysqlGeneratorTemplate) Generate() ([]*generator.GeneratorRespo
 				return nil, err
 			}
 			files = append(files, fileUseCaseImpl)
-		}
-		if len(entities) > 0 {
-			fileEntity, err := applyTemplateEntity(entities, f)
-			if err != nil {
-				return nil, err
-			}
-			files = append(files, fileEntity)
 		}
 	}
 

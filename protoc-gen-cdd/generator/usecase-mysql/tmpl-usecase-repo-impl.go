@@ -1,4 +1,4 @@
-package scaffold_mysql
+package usecase_mysql
 
 import (
 	"bytes"
@@ -37,28 +37,32 @@ var (
 			}
 			return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 		}
-		return out, err
+		return out.To{{.GetName}}Entity(), err
 	}
 	func (r *repository) GetAll() ([]*entity.{{.GetName}}, error) {
-		out, err := r.ds.GetAll()
+		datas, err := r.ds.GetAll()
 		if err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
+		}
+		out := []*entity.{{.GetName}}{}
+		for _, data := range datas{
+			out = append(out, data.To{{.GetName}}Entity())
 		}
 		return out, err
 	}
 	func (r *repository) Create(in entity.{{.GetName}}) (*entity.{{.GetName}}, error) {
-		out, err := r.ds.Create(in)
+		out, err := r.ds.Create(*{{.Mysql.TableName}}_ds.{{.GetName}}Model{}.From{{.GetName}}Entity(in))
 		if err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 		}
-		return out, err
+		return out.To{{.GetName}}Entity(), err
 	}
 	func (r *repository) Update(in entity.{{.GetName}}) (*entity.{{.GetName}}, error) {
-		out, err := r.ds.Update(in)
+		out, err := r.ds.Update(*{{.Mysql.TableName}}_ds.{{.GetName}}Model{}.From{{.GetName}}Entity(in))
 		if err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 		}
-		return out, err
+		return out.To{{.GetName}}Entity(), err
 	}
 	func (r *repository) Delete({{ .GetPrimaryKeyAsString "" "" "," true true }}) error {
 		err := r.ds.Delete({{ .GetPrimaryKeyAsString "" "" "," true false }})

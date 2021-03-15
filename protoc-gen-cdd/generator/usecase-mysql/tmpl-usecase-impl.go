@@ -1,4 +1,4 @@
-package scaffold_mysql
+package usecase_mysql
 
 import (
 	"bytes"

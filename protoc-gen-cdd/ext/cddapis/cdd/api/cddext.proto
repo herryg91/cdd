@@ -27,7 +27,7 @@ message Auth {
 
 // DB: Mysql
 message Mysql {
-  bool scaffold = 110001;
+  bool db_model = 110001;
   string table_name = 110002;
   bool disable_timestamp_tracking = 110003;
   bool enable_soft_delete = 110004;
