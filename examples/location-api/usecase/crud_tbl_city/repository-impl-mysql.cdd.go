@@ -26,28 +26,32 @@ func (r *repository) GetByPrimaryKey(id int) (*entity.City, error) {
 		}
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToCityEntity(), err
 }
 func (r *repository) GetAll() ([]*entity.City, error) {
-	out, err := r.ds.GetAll()
+	datas, err := r.ds.GetAll()
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
+	}
+	out := []*entity.City{}
+	for _, data := range datas {
+		out = append(out, data.ToCityEntity())
 	}
 	return out, err
 }
 func (r *repository) Create(in entity.City) (*entity.City, error) {
-	out, err := r.ds.Create(in)
+	out, err := r.ds.Create(*tbl_city_ds.CityModel{}.FromCityEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToCityEntity(), err
 }
 func (r *repository) Update(in entity.City) (*entity.City, error) {
-	out, err := r.ds.Update(in)
+	out, err := r.ds.Update(*tbl_city_ds.CityModel{}.FromCityEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToCityEntity(), err
 }
 func (r *repository) Delete(id int) error {
 	err := r.ds.Delete(id)
@@ -56,3 +60,22 @@ func (r *repository) Delete(id int) error {
 	}
 	return err
 }
+
+/*
+	// Add this in drivers/datasource/mysql/tbl_city/{any_file}.go
+
+	func (model *CityModel) ToCityEntity() *entity.City {
+		return &entity.City{
+			Id:model.Id,
+			ProvinceId:model.ProvinceId,
+			Name:model.Name,
+		}
+	}
+	func (CityModel) FromCityEntity(in entity.City) *CityModel {
+		return &CityModel{
+			Id:in.Id,
+			ProvinceId:in.ProvinceId,
+			Name:in.Name,
+		}
+	}
+*/

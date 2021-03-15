@@ -2,21 +2,24 @@ version: 1
 lang: go
 name: location-api
 contract: 
-  config:
-    output-grst: drivers/handler/grst/
-    output-scaffold-mysql:  
-    output-dependency: drivers/external/grst/
   proto-files:
     - contract/province.proto
     - contract/city.proto
+  config:
+    output-grst: drivers/handler/grst/
+    output-mysql-model: drivers/datasource/mysql/
+    output-dependency: drivers/external/grst/
+
 
 # default examples 
 # contract: 
-#   config:
-#     output-grst: drivers/handler/grst/
-#     output-scaffold-mysql:  
-#     output-dependency: drivers/external/grst/
 #   proto-files:
 #     - contract/province.proto
+#   config:
+#     output-grst: drivers/handler/grst/
+#     output-mysql-model: drivers/datasource/mysql/
+#     output-dependency: drivers/external/grst/
 
-# export GO111MODULE=on && export GOPROXY=direct && export GOSUMDB=off && go mod tidy
+# cdd gen go
+# cdd gen go-entity -f city.proto -e "City|CityProfile"
+# cdd gen go-entity -f province.proto -e "Province"

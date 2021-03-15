@@ -26,7 +26,7 @@ message GetReq {
 
 message City {
     option (cdd.api.mysql) = {
-        scaffold: true,
+        db_model: true,
         table_name: "tbl_city",
         disable_timestamp_tracking: false,
         enable_soft_delete: false

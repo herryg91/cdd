@@ -3,16 +3,8 @@
 
 package entity
 
-import (
-	"time"
-)
-
-// Mysql Table: tbl_city
 type City struct {
-	Id         int    `gorm:"primary_key;column:id"`
-	ProvinceId int    `gorm:"column:province_id"`
-	Name       string `gorm:"column:name"`
-
-	CreatedAt time.Time `gorm:"column:created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at"`
+	Id         int    `json:"id"`
+	ProvinceId int    `json:"province_id"`
+	Name       string `json:"name"`
 }

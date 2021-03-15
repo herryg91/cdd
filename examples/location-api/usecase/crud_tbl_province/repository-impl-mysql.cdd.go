@@ -26,28 +26,32 @@ func (r *repository) GetByPrimaryKey(id int) (*entity.Province, error) {
 		}
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToProvinceEntity(), err
 }
 func (r *repository) GetAll() ([]*entity.Province, error) {
-	out, err := r.ds.GetAll()
+	datas, err := r.ds.GetAll()
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
+	}
+	out := []*entity.Province{}
+	for _, data := range datas {
+		out = append(out, data.ToProvinceEntity())
 	}
 	return out, err
 }
 func (r *repository) Create(in entity.Province) (*entity.Province, error) {
-	out, err := r.ds.Create(in)
+	out, err := r.ds.Create(*tbl_province_ds.ProvinceModel{}.FromProvinceEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToProvinceEntity(), err
 }
 func (r *repository) Update(in entity.Province) (*entity.Province, error) {
-	out, err := r.ds.Update(in)
+	out, err := r.ds.Update(*tbl_province_ds.ProvinceModel{}.FromProvinceEntity(in))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
 	}
-	return out, err
+	return out.ToProvinceEntity(), err
 }
 func (r *repository) Delete(id int) error {
 	err := r.ds.Delete(id)
@@ -56,3 +60,20 @@ func (r *repository) Delete(id int) error {
 	}
 	return err
 }
+
+/*
+	// Add this in drivers/datasource/mysql/tbl_province/{any_file}.go
+
+	func (model *ProvinceModel) ToProvinceEntity() *entity.Province {
+		return &entity.Province{
+			Id:model.Id,
+			Name:model.Name,
+		}
+	}
+	func (ProvinceModel) FromProvinceEntity(in entity.Province) *ProvinceModel {
+		return &ProvinceModel{
+			Id:in.Id,
+			Name:in.Name,
+		}
+	}
+*/

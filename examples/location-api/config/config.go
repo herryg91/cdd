@@ -14,7 +14,7 @@ type Config struct {
 	DBHost         string `envconfig:"DB_HOST" default:"localhost"`
 	DBPort         string `envconfig:"DB_PORT" default:"3306"`
 	DBUserName     string `envconfig:"DB_USERNAME" default:"root"`
-	DBPass         string `envconfig:"DB_PASS" default:"root"`
+	DBPassword     string `envconfig:"DB_PASSWORD" default:"root"`
 	DBDatabaseName string `envconfig:"DB_DBNAME" default:"cdd"`
 	DBLogMode      bool   `envconfig:"DB_LOG_MODE" default:"true"`
 }
