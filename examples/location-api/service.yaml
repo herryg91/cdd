@@ -23,3 +23,7 @@ contract:
 # cdd gen go
 # cdd gen go-entity -f city.proto -e "City|CityProfile"
 # cdd gen go-entity -f province.proto -e "Province"
+# cdd gen go-ucm -f city.proto -n City
+# cdd gen go-ucm -f province.proto -n Province
+# combine: cdd gen go && cdd gen go-entity -f city.proto -e "City|CityProfile" && cdd gen go-entity -f province.proto -e "Province" && cdd gen go-ucm -f city.proto -n City && cdd gen go-ucm -f province.proto -n Province
+ 
