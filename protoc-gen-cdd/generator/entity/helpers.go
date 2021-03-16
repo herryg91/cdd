@@ -39,6 +39,10 @@ func getGoType(fieldext *descriptor.FieldDescriptorExt) string {
 	return t
 }
 
+func isRepeatTypeField(fieldext *descriptor.FieldDescriptorExt) bool {
+	return fieldext.GetLabel().String() == "LABEL_REPEATED"
+}
+
 func getGoStandartType(fieldext *descriptor.FieldDescriptorExt) string {
 	t := getGoType(fieldext)
 	switch t {
