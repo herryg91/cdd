@@ -32,6 +32,33 @@ func (mmp MysqlModelParam) NeedImportTime() bool {
 	return needImport
 }
 
+func (mmp MysqlModelParam) IsCreatedAt() bool {
+	if !mmp.Mysql.DisableTimestampTracking {
+		return true
+	}
+	for _, fext := range mmp.FieldExt {
+		if getGoType(fext) == "time.Time" {
+			if strings.ToLower(fext.GetName()) == "createdat" || strings.ToLower(fext.GetName()) == "created_at" {
+				return true
+			}
+		}
+	}
+	return false
+}
+func (mmp MysqlModelParam) IsUpdatedAt() bool {
+	if !mmp.Mysql.DisableTimestampTracking {
+		return true
+	}
+	for _, fext := range mmp.FieldExt {
+		if getGoType(fext) == "time.Time" {
+			if strings.ToLower(fext.GetName()) == "updatedat" || strings.ToLower(fext.GetName()) == "updated_at" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (mmp MysqlModelParam) GetPrimaryKey() []*descriptor.FieldDescriptorExt {
 	fieldpks := []*descriptor.FieldDescriptorExt{}
 	for _, f := range mmp.FieldExt {

@@ -44,9 +44,9 @@ var (
 	}
 
 	func (r *MysqlDatasource) Create(in {{.GetName}}Model) (*{{.GetName}}Model, error) {
-		{{ if not .Mysql.DisableTimestampTracking}} timeNow := time.Now()
-		in.CreatedAt = &timeNow
-		in.UpdatedAt = &timeNow {{ end }}
+		{{ if or .IsCreatedAt .IsUpdatedAt }} timeNow := time.Now() {{ end }}
+		{{ if .IsCreatedAt}} in.CreatedAt = &timeNow {{ end }}
+		{{ if .IsUpdatedAt}} in.UpdatedAt = &timeNow {{ end }}
 
 		err := r.db.Table(r.tableName).Create(&in).Error
 		if err != nil {
@@ -56,9 +56,9 @@ var (
 	}
 
 	func (r *MysqlDatasource) Update(in {{.GetName}}Model) (*{{.GetName}}Model, error) {
-		{{ if not .Mysql.DisableTimestampTracking}} timeNow := time.Now()
-		in.CreatedAt = nil
-		in.UpdatedAt = &timeNow {{ end }}
+		{{ if or .IsCreatedAt .IsUpdatedAt }} timeNow := time.Now() {{ end }}
+		{{ if .IsCreatedAt}} in.CreatedAt = nil {{ end }}
+		{{ if .IsUpdatedAt}} in.UpdatedAt = &timeNow {{ end }}
 		err := r.db.Table(r.tableName).Where("{{ .GetPrimaryKeyAsQueryStmt }}", {{ .GetPrimaryKeyAsString "in." "" "," false false }}).Updates(&in).Error
 		if err != nil {
 			return nil, err
