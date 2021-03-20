@@ -18,8 +18,7 @@ var (
 	
 	import (
 		{{ if .NeedImportTime }} "time" {{ end }}
-		"github.com/jinzhu/gorm"
-		_ "github.com/jinzhu/gorm/dialects/mysql"
+		"gorm.io/gorm"
 	)
 
 	type MysqlDatasource struct {

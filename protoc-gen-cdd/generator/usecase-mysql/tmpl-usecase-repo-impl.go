@@ -17,8 +17,7 @@ var (
 	
 	import (
 		"fmt"
-		"github.com/jinzhu/gorm"
-		_ "github.com/jinzhu/gorm/dialects/mysql"
+		"gorm.io/gorm"
 		"{{.GoModuleName}}/entity"
 		{{.Mysql.TableName}}_ds "{{.GoModuleName}}/drivers/datasource/mysql/{{.Mysql.TableName}}"
 	)
