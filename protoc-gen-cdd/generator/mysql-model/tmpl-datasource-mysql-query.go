@@ -32,7 +32,7 @@ var (
 
 	func (r *MysqlDatasource) GetByPrimaryKey({{ .GetPrimaryKeyAsString "" "" "," true true }}) (*{{.GetName}}Model, error) {
 		result := &{{.GetName}}Model{}
-		err := r.db.Table(r.tableName).First("{{ .GetPrimaryKeyAsQueryStmt }}", {{ .GetPrimaryKeyAsString "" "" "," true false }}).Scan(&result).Error
+		err := r.db.Table(r.tableName).Where("{{ .GetPrimaryKeyAsQueryStmt }}", {{ .GetPrimaryKeyAsString "" "" "," true false }}).First(&result).Error
 		return result, err
 	}
 
