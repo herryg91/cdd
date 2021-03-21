@@ -20,6 +20,7 @@ var (
 		"gorm.io/gorm"
 		"{{.GoModuleName}}/entity"
 		{{.Mysql.TableName}}_ds "{{.GoModuleName}}/drivers/datasource/mysql/{{.Mysql.TableName}}"
+		"errors"
 	)
 	type repository struct {
 		db     *gorm.DB
@@ -31,7 +32,7 @@ var (
 	func (r *repository) GetByPrimaryKey({{ .GetPrimaryKeyAsString "" "" "," true true }}) (*entity.{{.GetName}}, error) {
 		out, err := r.ds.GetByPrimaryKey({{ .GetPrimaryKeyAsString "" "" "," true false }})
 		if err != nil {
-			if gorm.IsRecordNotFoundError(err) {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return nil, ErrRecordNotFound
 			}
 			return nil, fmt.Errorf("%w: %s", ErrDatabaseError, err.Error())
