@@ -19,5 +19,6 @@ func NewGenCmd() *GenCmd {
 	c.AddCommand(NewGenGoEntityCmd().Command)
 	c.AddCommand(NewGenGoUsecaseCmd().Command)
 	c.AddCommand(NewGenGoUsecaseMysqlCmd().Command)
+	c.AddCommand(NewGenGoDatasourceMysqlCmd().Command)
 	return c
 }
