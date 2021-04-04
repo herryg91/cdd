@@ -33,7 +33,7 @@ func (c CORSPolicy) getAllOrigins() []string {
 	return resp
 }
 
-var DefaultCORSPreflightHeaders = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "ApiKey",
+var DefaultCORSPreflightHeaders = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization",
 	grst_context.CONTEXT_CLIENT_APPNAME.String(),
 	grst_context.CONTEXT_CLIENT_APPVERSION.String(),
 	grst_context.CONTEXT_CLIENT_APPVERSIONCODE.String(),
