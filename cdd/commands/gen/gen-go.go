@@ -97,12 +97,12 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if ctg.mysqlModel {
-			err = c.protocGenCddCli.GenerateMysqlModel(filename, dir, ctg.outputMysqlModelDir, c.printLog)
-			if err != nil {
-				return err
-			}
-		}
+		// if ctg.mysqlModel {
+		// 	err = c.protocGenCddCli.GenerateMysqlModel(filename, dir, ctg.outputMysqlModelDir, c.printLog)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// }
 	}
 
 	return nil

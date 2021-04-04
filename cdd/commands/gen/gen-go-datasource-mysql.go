@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ds_mysql_gen "github.com/herryg91/cdd/cdd/pkg/gen-go-datasource-mysql"
+	mysql_query_gen "github.com/herryg91/cdd/cdd/pkg/gen-go-mysql-query"
 	"github.com/spf13/cobra"
 )
 
@@ -40,6 +40,6 @@ func (c *GenGoDsMysql) runCommand(cmd *cobra.Command, args []string) error {
 		c.outputDir = filepath.Dir(c.inputFile)
 	}
 
-	err := ds_mysql_gen.Generate(c.inputFile, c.modelName, c.outputDir)
+	err := mysql_query_gen.Generate(c.inputFile, c.modelName, c.outputDir)
 	return err
 }

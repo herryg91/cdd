@@ -1,4 +1,4 @@
-package gengodatasource_mysql
+package gengo_mysql_query
 
 import (
 	"strings"
