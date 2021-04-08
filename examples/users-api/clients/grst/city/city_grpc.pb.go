@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CityClient interface {
 	Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*City, error)
-	Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*SearchResp, error)
+	Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*CityProfiles, error)
 }
 
 type cityClient struct {
@@ -38,8 +38,8 @@ func (c *cityClient) Get(ctx context.Context, in *GetReq, opts ...grpc.CallOptio
 	return out, nil
 }
 
-func (c *cityClient) Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*SearchResp, error) {
-	out := new(SearchResp)
+func (c *cityClient) Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*CityProfiles, error) {
+	out := new(CityProfiles)
 	err := c.cc.Invoke(ctx, "/city.city/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (c *cityClient) Search(ctx context.Context, in *SearchReq, opts ...grpc.Cal
 // for forward compatibility
 type CityServer interface {
 	Get(context.Context, *GetReq) (*City, error)
-	Search(context.Context, *SearchReq) (*SearchResp, error)
+	Search(context.Context, *SearchReq) (*CityProfiles, error)
 	mustEmbedUnimplementedCityServer()
 }
 
@@ -63,7 +63,7 @@ type UnimplementedCityServer struct {
 func (UnimplementedCityServer) Get(context.Context, *GetReq) (*City, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedCityServer) Search(context.Context, *SearchReq) (*SearchResp, error) {
+func (UnimplementedCityServer) Search(context.Context, *SearchReq) (*CityProfiles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedCityServer) mustEmbedUnimplementedCityServer() {}

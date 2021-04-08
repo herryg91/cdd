@@ -23,4 +23,6 @@ require (
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/validator.v2 v2.0.0-20200605151824-2b28d334fa05
 	gopkg.in/yaml.v2 v2.2.8 // indirect
+	gorm.io/driver/mysql v1.0.5
+	gorm.io/gorm v1.21.6
 )

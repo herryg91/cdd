@@ -13,22 +13,14 @@ service users {
     }
 }
 
-message GetProfileReq {
-   int32 Id = 1 [json_name="id", (cdd.api.validate) = "required", (cdd.api.default) = "1"];
-}
-
-
 message User {
-    option (cdd.api.mysql) = {
-        db_model: true,
-        table_name: "tbl_users",
-        disable_timestamp_tracking: false,
-        enable_soft_delete: false
-    };
-
     int32 Id = 1 [json_name="id", (cdd.api.mysql_field).primary_key = true];
 	string Name = 2 [json_name="name"];
     int32 ProvinceId = 3 [json_name="province_id"];
+}
+
+message GetProfileReq {
+   int32 Id = 1 [json_name="id", (cdd.api.validate) = "required", (cdd.api.default) = "1"];
 }
 
 message UserProfile {

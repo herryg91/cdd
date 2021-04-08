@@ -10,15 +10,18 @@ dependencies:
 
 # default examples 
 # contract: 
-#   config:
-#     output-grst: drivers/handler/grst/
-#     output-mysql-model: drivers/datasource/mysql/
-#     output-dependency: drivers/external/grst/
+#   output-grst: handler/grst/
 #   proto-files:
-#     - contract/province.proto
+#     - contract/users.proto
+# dependencies:
+#   output-grst: clients/grst/
+#   services:
+#     - ../location-api/service.yaml
 
 # cdd gen go
 # cdd gen go-entity -f users.proto -e "UserProfile|User"
 # cdd gen go-ucm -f users.proto -n User
 # combine: cdd gen go && cdd gen go-entity -f users.proto -e "UserProfile|User" && cdd gen go-ucm -f users.proto -n User 
- 
+
+# one time call
+# cdd gen go-uc -n profile -o app/usecase

@@ -1,36 +1,38 @@
 package main
 
 import (
+	"time"
+
+	profile_usecase "github.com/herryg91/cdd/examples/users-api/app/usecase/profile"
+	pbProvince "github.com/herryg91/cdd/examples/users-api/clients/grst/province"
 	"github.com/herryg91/cdd/examples/users-api/config"
-	"github.com/herryg91/cdd/examples/users-api/drivers/datasource/mysql/tbl_users"
-	pbProvince "github.com/herryg91/cdd/examples/users-api/drivers/external/grst/province"
-	"github.com/herryg91/cdd/examples/users-api/drivers/handler"
-	pbUsers "github.com/herryg91/cdd/examples/users-api/drivers/handler/grst/users"
-	profile_usecase "github.com/herryg91/cdd/examples/users-api/usecase/profile"
+	"github.com/herryg91/cdd/examples/users-api/handler"
+	pbUsers "github.com/herryg91/cdd/examples/users-api/handler/grst/users"
+	"github.com/herryg91/cdd/examples/users-api/pkg/conn/mysql"
+	"github.com/herryg91/cdd/examples/users-api/repository/user_repository_impl"
 	"github.com/herryg91/cdd/grst"
 	loggerInterceptor "github.com/herryg91/cdd/grst/interceptor/logger"
 	recoveryInterceptor "github.com/herryg91/cdd/grst/interceptor/recovery"
 	sessionInterceptor "github.com/herryg91/cdd/grst/interceptor/session"
-	"github.com/herryg91/hgolib/databases/mysql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm/logger"
 )
 
 func main() {
 	cfg := config.New()
 
-	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPassword, cfg.DBDatabaseName, cfg.DBLogMode)
+	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPassword, cfg.DBDatabaseName,
+		mysql.SetPrintLog(cfg.DBLogEnable, logger.LogLevel(cfg.DBLogLevel), time.Duration(cfg.DBLogThreshold)*time.Millisecond))
 	if err != nil {
 		logrus.Panicln("Failed to Initialized mysql DB:", err)
 	}
 
-	usersDatasource := tbl_users.NewMysqlDatasource(db)
 	provinceClient, err := pbProvince.NewProvinceGrstClient(cfg.LocationApi, nil)
 	if err != nil {
 		panic(err)
 	}
-	profileRepo := profile_usecase.NewRepository(db, usersDatasource, provinceClient)
-	profileUsecase := profile_usecase.NewUsecase(profileRepo)
+	userRepo := user_repository_impl.New(db, provinceClient)
+	profileUsecase := profile_usecase.New(userRepo)
 	usersHndl := handler.NewHandler(profileUsecase)
 
 	grpcRestSrv, err := grst.NewServer(cfg.GrpcPort, cfg.RestPort, true,
