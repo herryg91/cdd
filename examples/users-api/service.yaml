@@ -20,8 +20,7 @@ dependencies:
 
 # cdd gen go
 # cdd gen go-entity -f users.proto -e "UserProfile|User"
-# cdd gen go-ucm -f users.proto -n User
-# combine: cdd gen go && cdd gen go-entity -f users.proto -e "UserProfile|User" && cdd gen go-ucm -f users.proto -n User 
+# combine: cdd gen go && cdd gen go-entity -f users.proto -e "UserProfile|User"
 
 # one time call
 # cdd gen go-uc -n profile -o app/usecase
