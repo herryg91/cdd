@@ -93,9 +93,11 @@ var (
 	func Register{{$svcName}}GrstServer(grpcRestServer *grst.Server, hndl {{$svcName}}Server) {
 	{{ range $m := .Service.MethodExt}}
 		forward_{{$svcName}}_{{$m.GetName}}_0 = {{if $m.GetServerStreaming}}grpcRestServer.GetForwardResponseStream(){{else}}grpcRestServer.GetForwardResponseMessage(){{end}}
-		{{ range $idx, $binding := $m.HttpRule.AdditionalBindings }}
-		forward_{{$svcName}}_{{$m.GetName}}_{{Increment $idx}} = {{if $m.GetServerStreaming}}grpcRestServer.GetForwardResponseStream(){{else}}grpcRestServer.GetForwardResponseMessage(){{end}}
-		{{ end }}
+		{{ if $m.HttpRule }}
+			{{ range $idx, $binding := $m.HttpRule.AdditionalBindings }}
+			forward_{{$svcName}}_{{$m.GetName}}_{{Increment $idx}} = {{if $m.GetServerStreaming}}grpcRestServer.GetForwardResponseStream(){{else}}grpcRestServer.GetForwardResponseMessage(){{end}}
+			{{ end }}
+		{{ end}}
 	{{ end}}
 		Register{{$svcName}}Server(grpcRestServer.GetGrpcServer(), hndl)
 		grpcRestServer.RegisterRestHandler(Register{{$svcName}}Handler)
