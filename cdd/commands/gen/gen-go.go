@@ -32,47 +32,40 @@ func NewGenGoCmd() *GenGoCmd {
 }
 
 type ContractToGenerate struct {
-	protoInput          string
-	outputGrstDir       string
-	outputMysqlModelDir string
-	mysqlModel          bool
+	protoInput    string
+	outputGrstDir string
 }
 
-const defaultOutputMysqlModel = "drivers/datasource/mysql/"
-const defaultOutputGrst = "drivers/handler/grst/"
-const defaultOutputDependency = "drivers/external/grst/"
+const defaultContractOutputGrst = "handler/grst/"
+const defaultDependencyOutputGrst = "clients/grst/"
 
 func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 	svcYaml, err := serviceYaml.GetServiceYAML(c.serviceYamlFile)
 	if err != nil {
 		return err
 	}
-	outputGrst := svcYaml.Contract.Config.OutputGrst
-	outputMysqlModel := svcYaml.Contract.Config.OutputMysqlModel
-	outputDependency := svcYaml.Contract.Config.OutputDependency
-	if outputGrst == "" {
-		outputGrst = defaultOutputGrst
+
+	contractOutputGrst := svcYaml.Contract.OutputGrst
+	dependencyOutputGrst := svcYaml.Dependency.OutputGrst
+
+	if contractOutputGrst == "" {
+		contractOutputGrst = defaultContractOutputGrst
 	}
-	if outputDependency == "" {
-		outputDependency = defaultOutputDependency
-	}
-	if outputMysqlModel == "" {
-		outputMysqlModel = defaultOutputMysqlModel
+	if dependencyOutputGrst == "" {
+		dependencyOutputGrst = defaultDependencyOutputGrst
 	}
 
 	contractsToGenerate := []ContractToGenerate{}
 	// Setup proto contract for main service
 	for _, file := range svcYaml.Contract.ProtoFiles {
 		contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-			protoInput:          file,
-			outputGrstDir:       outputGrst,
-			outputMysqlModelDir: outputMysqlModel,
-			mysqlModel:          true,
+			protoInput:    file,
+			outputGrstDir: contractOutputGrst,
 		})
 	}
 
 	// Setup proto contract for dependencies services
-	for _, svcFilePath := range svcYaml.Dependencies.Services {
+	for _, svcFilePath := range svcYaml.Dependency.Services {
 		svcYamlDependency, err := serviceYaml.GetServiceYAML(svcFilePath)
 		if err != nil {
 			return err
@@ -82,10 +75,8 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 
 		for _, file := range svcYamlDependency.Contract.ProtoFiles {
 			contractsToGenerate = append(contractsToGenerate, ContractToGenerate{
-				protoInput:          dirDependency + "/" + file,
-				outputGrstDir:       outputDependency,
-				outputMysqlModelDir: outputMysqlModel,
-				mysqlModel:          false,
+				protoInput:    dirDependency + "/" + file,
+				outputGrstDir: dependencyOutputGrst,
 			})
 		}
 	}
@@ -97,6 +88,7 @@ func (c *GenGoCmd) runCommand(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
+		// Generate mysql datasource from contract will deprecated
 		// if ctg.mysqlModel {
 		// 	err = c.protocGenCddCli.GenerateMysqlModel(filename, dir, ctg.outputMysqlModelDir, c.printLog)
 		// 	if err != nil {
