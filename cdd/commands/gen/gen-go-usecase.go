@@ -12,6 +12,7 @@ type GenGoUsecase struct {
 	Command         *cobra.Command
 	protocGenCddCli *protocgencdd.ProtocGenCdd
 	name            string
+	output          string
 	printLog        bool
 }
 
@@ -28,6 +29,7 @@ func NewGenGoUsecaseCmd() *GenGoUsecase {
 	}
 	c.Command.RunE = c.runCommand
 	c.Command.Flags().StringVarP(&c.name, "name", "n", "", "usecase name")
+	c.Command.Flags().StringVarP(&c.output, "output", "o", "", "output directory. default = app/usecase")
 	c.Command.Flags().BoolVar(&c.printLog, "print", false, "print log")
 	return c
 }
@@ -36,7 +38,7 @@ func (c *GenGoUsecase) runCommand(cmd *cobra.Command, args []string) error {
 	if c.name == "" {
 		return fmt.Errorf("--name or -n is required")
 	}
-	err := usecase.Generate(c.name)
+	err := usecase.Generate(c.name, c.output)
 
 	return err
 }

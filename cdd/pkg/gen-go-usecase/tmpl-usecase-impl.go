@@ -15,14 +15,13 @@ var (
 	package {{ToSnake .UsecaseName}}
 	
 	type usecase struct {
-		repo Repository
+		// add repository here
 	}
 	
-	func NewUsecase(repo Repository) UseCase {
-		return &usecase{
-			repo: repo,
-		}
+	func NewUsecase() UseCase {
+		return &usecase{}
 	}
+	// func (uc *usecase) Get(id int) (*entity.{{.UsecaseName }}, error){}
 	`))
 )
 
@@ -45,7 +44,7 @@ func applyTemplateUseCaseImpl(usecaseName string, filepath string) (*generatorRe
 	}
 
 	return &generatorResponseFile{
-		outputPath: filepath + "/usecase-impl.cdd.go",
+		outputPath: filepath + "/implement.cdd.go",
 		content:    string(formatted),
 	}, nil
 }

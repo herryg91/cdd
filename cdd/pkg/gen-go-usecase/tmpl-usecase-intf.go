@@ -14,14 +14,6 @@ var (
 	}).Parse(`
 	package {{ToSnake .UsecaseName}}
 	
-	type Repository interface {
-		// Get(id int) (*entity.{{.UsecaseName }}, error)
-		// GetAll() ([]*entity.{{.UsecaseName }}, error)
-		// Create(in entity.{{.UsecaseName}}) (*entity.{{.UsecaseName}}, error)
-		// Update(in entity.{{.UsecaseName}}) (*entity.{{.UsecaseName}}, error)
-		// Delete(id int) error
-	}
-
 	type UseCase interface {
 		// Get(id int) (*entity.{{.UsecaseName }}, error)
 		// GetAll() ([]*entity.{{.UsecaseName }}, error)

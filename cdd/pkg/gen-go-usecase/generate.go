@@ -13,14 +13,17 @@ type generatorResponseFile struct {
 	content    string
 }
 
-func Generate(usecaseName string) error {
+func Generate(usecaseName string, dir string) error {
 	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
 	if err != nil {
 		log.Fatal(err)
 	}
 	usecaseName = strings.TrimSpace(usecaseName)
 	usecaseName = reg.ReplaceAllString(usecaseName, "_")
-	folderpath := "usecase/" + usecaseName
+	if dir == "" {
+		dir = "./"
+	}
+	folderpath := dir + "/" + usecaseName
 	os.MkdirAll(folderpath, os.ModePerm)
 
 	files := []*generatorResponseFile{}
@@ -42,11 +45,11 @@ func Generate(usecaseName string) error {
 	}
 	files = append(files, fUsecaseIntf)
 
-	fUsecaseRepoImpl, err := applyTemplateUseCaseRepoImpl(usecaseName, folderpath)
-	if err != nil {
-		return err
-	}
-	files = append(files, fUsecaseRepoImpl)
+	// fUsecaseRepoImpl, err := applyTemplateUseCaseRepoImpl(usecaseName, folderpath)
+	// if err != nil {
+	// 	return err
+	// }
+	// files = append(files, fUsecaseRepoImpl)
 
 	for _, f := range files {
 		err := f.generateFile()
