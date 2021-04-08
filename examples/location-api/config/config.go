@@ -12,11 +12,13 @@ type Config struct {
 	GrpcPort    int    `envconfig:"grpc_port" default:"19090" required:"true"`
 
 	DBHost         string `envconfig:"DB_HOST" default:"localhost"`
-	DBPort         string `envconfig:"DB_PORT" default:"3306"`
+	DBPort         int    `envconfig:"DB_PORT" default:"3306"`
 	DBUserName     string `envconfig:"DB_USERNAME" default:"root"`
 	DBPassword     string `envconfig:"DB_PASSWORD" default:"root"`
 	DBDatabaseName string `envconfig:"DB_DBNAME" default:"cdd"`
-	DBLogMode      bool   `envconfig:"DB_LOG_MODE" default:"true"`
+	DBLogEnable    bool   `envconfig:"DB_LOG_ENABLE" default:"true"`
+	DBLogLevel     int    `envconfig:"DB_LOG_LEVEL" default:"3"`
+	DBLogThreshold int    `envconfig:"DB_LOG_THRESHOLD" default:"200"`
 }
 
 func New() Config {

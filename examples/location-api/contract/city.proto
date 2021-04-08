@@ -11,7 +11,7 @@ service city {
             get: "/city/{Id}"
         };
     }
-    rpc Search(SearchReq) returns (SearchResp) {
+    rpc Search(SearchReq) returns (CityProfiles) {
         option (google.api.http) = {
             post: "/city",
             body: "*"
@@ -23,25 +23,30 @@ message GetReq {
    int32 Id = 1 [json_name="id", (cdd.api.validate) = "required", (cdd.api.default) = "1"];
 }
 
-
 message City {
-    option (cdd.api.mysql) = {
-        db_model: true,
-        table_name: "tbl_city",
-        disable_timestamp_tracking: false,
-        enable_soft_delete: false
-    };
-
     int32 Id = 1 [json_name="id", (cdd.api.mysql_field).primary_key = true];
     int32 ProvinceId = 2 [json_name="province_id"];
-	string Name = 3 [json_name="name"];
+    string Name = 3 [json_name="name"];
 }
+
+//message City {
+//    option (cdd.api.mysql) = {
+//        db_model: true,
+//        table_name: "tbl_city",
+//        disable_timestamp_tracking: false,
+//        enable_soft_delete: false
+//    };
+
+//    int32 Id = 1 [json_name="id", (cdd.api.mysql_field).primary_key = true];
+//    int32 ProvinceId = 2 [json_name="province_id"];
+//	string Name = 3 [json_name="name"];
+//}
 
 message SearchReq {
    string Keyword = 1 [json_name="keyword", (cdd.api.validate) = "required"];
 }
 
-message SearchResp {
+message CityProfiles {
     repeated CityProfile Cities = 1 [json_name="cities"];
 }
 message CityProfile {

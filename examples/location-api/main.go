@@ -1,21 +1,24 @@
 package main
 
 import (
+	"time"
+
+	crud_city_usecase "github.com/herryg91/cdd/examples/location-api/app/usecase/crud_city"
+	crud_province_usecase "github.com/herryg91/cdd/examples/location-api/app/usecase/crud_province"
+	search_usecase "github.com/herryg91/cdd/examples/location-api/app/usecase/search"
 	"github.com/herryg91/cdd/examples/location-api/config"
-	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_city"
-	"github.com/herryg91/cdd/examples/location-api/drivers/datasource/mysql/tbl_province"
-	"github.com/herryg91/cdd/examples/location-api/drivers/handler"
-	pbCity "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/city"
-	pbProvince "github.com/herryg91/cdd/examples/location-api/drivers/handler/grst/province"
-	crud_tbl_city "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_city"
-	crud_tbl_province "github.com/herryg91/cdd/examples/location-api/usecase/crud_tbl_province"
-	search_usecase "github.com/herryg91/cdd/examples/location-api/usecase/search"
+	"github.com/herryg91/cdd/examples/location-api/handler"
+	pbCity "github.com/herryg91/cdd/examples/location-api/handler/grst/city"
+	pbProvince "github.com/herryg91/cdd/examples/location-api/handler/grst/province"
+	"github.com/herryg91/cdd/examples/location-api/repository/city_mysql"
+	"github.com/herryg91/cdd/examples/location-api/repository/province_mysql"
 	"github.com/herryg91/cdd/grst"
 	loggerInterceptor "github.com/herryg91/cdd/grst/interceptor/logger"
 	recoveryInterceptor "github.com/herryg91/cdd/grst/interceptor/recovery"
 	sessionInterceptor "github.com/herryg91/cdd/grst/interceptor/session"
+	"gorm.io/gorm/logger"
 
-	"github.com/herryg91/hgolib/databases/mysql"
+	"github.com/herryg91/cdd/examples/location-api/pkg/conn/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sirupsen/logrus"
 )
@@ -23,20 +26,20 @@ import (
 func main() {
 	cfg := config.New()
 
-	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPassword, cfg.DBDatabaseName, cfg.DBLogMode)
+	db, err := mysql.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUserName, cfg.DBPassword, cfg.DBDatabaseName,
+		mysql.SetPrintLog(cfg.DBLogEnable, logger.LogLevel(cfg.DBLogLevel), time.Duration(cfg.DBLogThreshold)*time.Millisecond))
 	if err != nil {
 		logrus.Panicln("Failed to Initialized mysql DB:", err)
 	}
 
-	provinceDatasource := tbl_province.NewMysqlDatasource(db)
-	provinceRepo := crud_tbl_province.NewRepository(db, provinceDatasource)
-	provinceUsecase := crud_tbl_province.NewUsecase(provinceRepo)
-	provinceHndl := handler.NewProvinceHandler(provinceUsecase)
+	provinceRepo := province_mysql.New(db)
+	cityRepo := city_mysql.New(db)
 
-	cityDatasource := tbl_city.NewMysqlDatasource(db)
-	cityRepo := crud_tbl_city.NewRepository(db, cityDatasource)
-	cityUsecase := crud_tbl_city.NewUsecase(cityRepo)
-	citySearchUsecase := search_usecase.NewUsecase(search_usecase.NewRepository(cityDatasource, provinceDatasource))
+	provinceUsecase := crud_province_usecase.New(provinceRepo)
+	cityUsecase := crud_city_usecase.New(cityRepo)
+	citySearchUsecase := search_usecase.New(cityRepo, provinceRepo)
+
+	provinceHndl := handler.NewProvinceHandler(provinceUsecase)
 	cityHndl := handler.NewCityHandler(cityUsecase, citySearchUsecase)
 
 	grpcRestSrv, err := grst.NewServer(cfg.GrpcPort, cfg.RestPort, true,
