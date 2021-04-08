@@ -18,10 +18,10 @@ type GenGoDsMysql struct {
 func NewGenGoDatasourceMysqlCmd() *GenGoDsMysql {
 	c := &GenGoDsMysql{
 		Command: &cobra.Command{
-			Use:     "go-ds-mysql",
-			Aliases: []string{"go-dsm"},
-			Short:   "generate query mysql on datasources based on struct model",
-			Long:    "generate query mysql on datasources based on struct model",
+			Use:     "go-mysql-query",
+			Aliases: []string{"go-msq"},
+			Short:   "generate query mysql query based on struct model",
+			Long:    "generate query mysql query based on struct model",
 			Run:     nil,
 		},
 	}
