@@ -10,12 +10,14 @@ contract:
 
 # default examples 
 # contract: 
+#   output-grst: handler/grst/
 #   proto-files:
-#     - contract/province.proto
-#   config:
-#     output-grst: drivers/handler/grst/
-#     output-mysql-model: drivers/datasource/mysql/
-#     output-dependency: drivers/external/grst/
+#     - contract/users.proto
+# dependencies:
+#   output-grst: clients/grst/
+#   services:
+#     - ../location-api/service.yaml
+
 
 # cdd gen go
 # cdd gen go-msq -f repository/city_mysql/model.go -n CityModel
