@@ -66,6 +66,14 @@ var (
 	{{- end}}
 	}
 
+	var NeedApiKeyFullMethods = []string{
+		{{- range $svc := .ServiceExt}}
+	{{- range $mth := $svc.MethodExt}}
+		{{if $mth.Auth.Needapikey}} "/{{$pkgName}}.{{$svc.GetName}}/{{$mth.GetName}}", {{end}}
+	{{- end}}
+	{{- end}}
+	}
+
 	func ValidateRequest(req interface{}) error {
 		defaults.SetDefaults(req)
 		if errs := validator.Validate(req); errs != nil {

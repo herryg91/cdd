@@ -23,6 +23,7 @@ extend google.protobuf.MethodOptions {
 // Authentication
 message Auth {
    bool needauth = 130001;
+   bool needapikey = 130002;
 }
 
 // DB: Mysql
