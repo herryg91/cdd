@@ -3,7 +3,7 @@ package city_mysql
 import (
 	"errors"
 
-	city_repository "github.com/herryg91/cdd/examples/location-api/app/repository/city"
+	repository_intf "github.com/herryg91/cdd/examples/location-api/app/repository"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 	"gorm.io/gorm"
 )
@@ -13,7 +13,7 @@ type repository struct {
 	tableName string
 }
 
-func New(db *gorm.DB) city_repository.Repository {
+func New(db *gorm.DB) repository_intf.CityRepository {
 	return &repository{db, "tbl_city"}
 }
 
@@ -21,7 +21,7 @@ func (r *repository) GetById(id int) (*entity.City, error) {
 	data, err := CityModel{}.QueryGet(r.db, id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, city_repository.ErrRecordNotFound
+			return nil, repository_intf.ErrCityNotFound
 		}
 		return nil, err
 	}

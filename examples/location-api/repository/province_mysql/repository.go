@@ -3,7 +3,7 @@ package province_mysql
 import (
 	"errors"
 
-	province_repository "github.com/herryg91/cdd/examples/location-api/app/repository/province"
+	repository_intf "github.com/herryg91/cdd/examples/location-api/app/repository"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 	"gorm.io/gorm"
 )
@@ -13,7 +13,7 @@ type repository struct {
 	tableName string
 }
 
-func New(db *gorm.DB) province_repository.Repository {
+func New(db *gorm.DB) repository_intf.ProvinceRepository {
 	return &repository{db, "tbl_province"}
 }
 
@@ -21,7 +21,7 @@ func (r *repository) Get(id int) (*entity.Province, error) {
 	data, err := ProvinceModel{}.QueryGet(r.db, id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, province_repository.ErrRecordNotFound
+			return nil, repository_intf.ErrProvinceNotFound
 		}
 		return nil, err
 	}

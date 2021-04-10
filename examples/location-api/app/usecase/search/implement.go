@@ -3,17 +3,16 @@ package search_usecase
 import (
 	"fmt"
 
-	city_repository "github.com/herryg91/cdd/examples/location-api/app/repository/city"
-	province_repository "github.com/herryg91/cdd/examples/location-api/app/repository/province"
+	"github.com/herryg91/cdd/examples/location-api/app/repository"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 )
 
 type usecase struct {
-	city_repo     city_repository.Repository
-	province_repo province_repository.Repository
+	city_repo     repository.CityRepository
+	province_repo repository.ProvinceRepository
 }
 
-func New(city_repo city_repository.Repository, province_repo province_repository.Repository) UseCase {
+func New(city_repo repository.CityRepository, province_repo repository.ProvinceRepository) UseCase {
 	return &usecase{
 		city_repo:     city_repo,
 		province_repo: province_repo,

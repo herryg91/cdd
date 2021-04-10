@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 
-	city_repository "github.com/herryg91/cdd/examples/location-api/app/repository/city"
+	"github.com/herryg91/cdd/examples/location-api/app/repository"
 	"github.com/herryg91/cdd/examples/location-api/entity"
 )
 
 type usecase struct {
-	city_repo city_repository.Repository
+	city_repo repository.CityRepository
 }
 
-func New(city_repo city_repository.Repository) UseCase {
+func New(city_repo repository.CityRepository) UseCase {
 	return &usecase{
 		city_repo: city_repo,
 	}
@@ -20,7 +20,7 @@ func New(city_repo city_repository.Repository) UseCase {
 func (uc *usecase) GetByPrimaryKey(id int) (*entity.City, error) {
 	data, err := uc.city_repo.GetById(id)
 	if err != nil {
-		if errors.Is(err, city_repository.ErrRecordNotFound) {
+		if errors.Is(err, repository.ErrCityNotFound) {
 			return nil, ErrRecordNotFound
 		}
 		return nil, fmt.Errorf("%w: %v", ErrDatabaseError, err)
