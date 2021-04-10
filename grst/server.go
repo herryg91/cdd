@@ -93,7 +93,7 @@ func NewServer(grpcPort int, restPort int, enableRest bool, options ...OptionFun
 			grst_context.CONTEXT_CLIENT_PLATFORM.String(),
 			grst_context.CONTEXT_CLIENT_PLATFORMVERSION.String(),
 			grst_context.CONTEXT_CLIENT_SDKVERSION.String(),
-			"ApiKey",
+			"grst.ApiKey",
 		},
 
 		// other
