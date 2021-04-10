@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	user_repository "github.com/herryg91/cdd/examples/users-api/app/repository/user"
+	repository_intf "github.com/herryg91/cdd/examples/users-api/app/repository"
 	pbProvince "github.com/herryg91/cdd/examples/users-api/clients/grst/province"
 	"github.com/herryg91/cdd/examples/users-api/entity"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ type repository struct {
 	tableName   string
 }
 
-func New(db *gorm.DB, provinceCli pbProvince.ProvinceClient) user_repository.Repository {
+func New(db *gorm.DB, provinceCli pbProvince.ProvinceClient) repository_intf.UserRepository {
 	return &repository{db, provinceCli, "tbl_users"}
 }
 
@@ -26,7 +26,7 @@ func (r *repository) GetById(id int) (*entity.User, error) {
 	err := r.db.Table(r.tableName).Where("id = ?", id).First(&data).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, user_repository.ErrRecordNotFound
+			return nil, repository_intf.ErrUserNotFound
 		}
 		return nil, err
 	}
