@@ -93,7 +93,7 @@ func ruleEnum(in interface{}, param string) (err error) {
 		return errors.New("rule `enum` can only be used by string data type")
 	}
 
-	enumList := strings.Split(param, ",")
+	enumList := strings.Split(param, "|")
 	for _, e := range enumList {
 		if e == inStr {
 			return nil

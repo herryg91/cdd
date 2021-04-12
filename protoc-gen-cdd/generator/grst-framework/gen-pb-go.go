@@ -25,9 +25,15 @@ func callProtocGoOut(f *descriptor.FileDescriptorExt, genfile *protogen.Generate
 			if fext == nil {
 				continue
 			}
+			structNameParam := structName
+			if fext.OneofIndex != nil {
+				structNameParam += "_" + fext.GetName()
+				// log.Println(structName, fext.GetName(), fext.GetJsonName())
+				// continue
+			}
 			var err error
 			fieldName := fext.GetName()
-			parsedContent, err = gomodifytags.OverrideJSON_Content(parsedContent, structName, fieldName, fext.GetJsonName(), true)
+			parsedContent, err = gomodifytags.OverrideJSON_Content(parsedContent, structNameParam, fieldName, fext.GetJsonName(), true)
 			if err != nil {
 				return nil, fmt.Errorf("[error] gomodifytags.OverrideJSON_Content %s %s %s. Error: %s", structName, fieldName, fext.GetJsonName(), err.Error())
 			}
