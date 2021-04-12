@@ -279,7 +279,9 @@ func (c *config) addTags(fieldName string, tags *structtag.Tags) (*structtag.Tag
 			name = strings.Join(splitted[1:], "")
 			// additional validate
 			if key == "validate" {
+				name = strings.Replace(name, ";", "#", -1)
 				name = strings.Replace(name, "|", ",", -1)
+				name = strings.Replace(name, "#", "|", -1)
 			}
 		} else if unknown {
 			// the user didn't pass any value but want to use an unknown

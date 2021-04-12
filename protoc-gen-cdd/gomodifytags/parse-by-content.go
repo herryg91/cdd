@@ -148,7 +148,7 @@ func AddValidate_Content(content string, structName string, fieldName string, va
 	var flagModified bool
 	var flagAddTags, flagAddOptions, flagRemoveTags, flagRemoveOptions string
 	flagAddTags = "validate:" + strings.Join(validationRuleTag, "|")
-
+	flagAddTags = strings.ReplaceAll(flagAddTags, ",", ";")
 	/* override original function realMain */
 
 	if flagModified {
