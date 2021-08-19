@@ -35,7 +35,7 @@ func UnaryServerInterceptor(authTokenClient authtokenapi.AuthTokenClient, fullMe
 		}
 
 		token := md["authorization"][0]
-		reqBody, err := json.Marshal(ValidateTokenReq{AccessToken: accessToken})
+		reqBody, err := json.Marshal(authtokenapi.ValidateTokenReq{AccessToken: token})
 		if err != nil {
 			return nil, grst_errors.New(500, codes.Unknown, 98101, err.Error())
 		}

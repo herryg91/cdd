@@ -41,7 +41,7 @@ type Server struct {
 	errorHandler           runtime.ErrorHandlerFunc
 	forwardResponseMessage func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error)
 	forwardHeaderToContext []string
-
+	forwardResponseOption  func(ctx context.Context, req http.ResponseWriter, resp proto.Message) error
 	// other
 	lock *sync.Mutex
 }
@@ -95,7 +95,9 @@ func NewServer(grpcPort int, restPort int, enableRest bool, options ...OptionFun
 			grst_context.CONTEXT_CLIENT_SDKVERSION.String(),
 			"apikey",
 		},
-
+		forwardResponseOption: func(ctx context.Context, req http.ResponseWriter, resp proto.Message) error {
+			return nil
+		},
 		// other
 		lock: &sync.Mutex{},
 	}
@@ -108,9 +110,7 @@ func NewServer(grpcPort int, restPort int, enableRest bool, options ...OptionFun
 	}
 
 	s.grpcGatewayMuxServer = runtime.NewServeMux(
-		runtime.WithForwardResponseOption(func(ctx context.Context, req http.ResponseWriter, resp proto.Message) error {
-			return nil
-		}),
+		runtime.WithForwardResponseOption(s.forwardResponseOption),
 		runtime.WithErrorHandler(s.errorHandler),
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonpbMarshaller),
 		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
@@ -223,6 +223,14 @@ func WithCustomCORSPreflightHeaders(headers []string) OptionFunc {
 func WithCustomCORSPreflightMethods(methods []string) OptionFunc {
 	return func(s *Server) error {
 		s.corsPolicy.preflightMethods = methods
+		return nil
+	}
+}
+
+// WithCustomCORSPreflightHeader default Access-Control-Allow-Headers: Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, appname, appversion, appversioncode, manufacturer, model, platform, platformversion, sdkversion, User-Agent (grst.DefaultCORSPreflightHeaders)
+func WithCustomForwardResponseOption(forwardResponseOption func(ctx context.Context, req http.ResponseWriter, resp proto.Message) error) OptionFunc {
+	return func(s *Server) error {
+		s.forwardResponseOption = forwardResponseOption
 		return nil
 	}
 }

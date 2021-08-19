@@ -20,16 +20,16 @@ type client struct {
 	httpClient        *http.Client
 }
 
-type AuthTokenClient interface {
-	ValidateToken(path string, accessToken string) (*SuccessResp, *ErrorResp)
-}
-
-func NewClient(baseURL string, validateTokenPath string) UserTokenClient {
+func NewClient(baseURL string, validateTokenPath string) AuthTokenClient {
 	return &client{
 		baseURL:           baseURL,
 		validateTokenPath: validateTokenPath,
 		httpClient:        &http.Client{Timeout: 10 * time.Second},
 	}
+}
+
+type ValidateTokenReq struct {
+	AccessToken string `json:"access_token"`
 }
 
 func (s *client) ValidateToken(reqBody io.Reader) (*SuccessResp, *ErrorResp) {
