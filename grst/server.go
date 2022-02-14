@@ -300,6 +300,11 @@ func (s *Server) GetGrpcServer() *grpc.Server {
 	return s.grpcServer
 }
 
+// GetRestServer get current rest server object
+func (s *Server) GetRestServer() *http.Server {
+	return s.restServer
+}
+
 // GetGrpcAddr will return return :{port}
 func (s *Server) GetGrpcAddr() string {
 	return fmt.Sprintf(":%d", s.grpcPort)
