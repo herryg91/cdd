@@ -1,4 +1,4 @@
-package graceful
+package grst
 
 import (
 	"context"
@@ -7,12 +7,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/herryg91/cdd/grst"
 	"github.com/sirupsen/logrus"
 )
 
-func StartGrstServerWithGracefulShutdown(srv grst.Server, timeout_graceful int) {
-	go func(server grst.Server) {
+func StartGrstServerWithGracefulShutdown(srv Server, timeout_graceful int) {
+	go func(server Server) {
 		if err := <-server.ListenAndServeGrst(); err != nil {
 			logrus.Fatalln("Failed to Run GRST Server:", err)
 		}
