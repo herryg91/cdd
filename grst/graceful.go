@@ -10,8 +10,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func StartGrstServerWithGracefulShutdown(srv Server, timeout_graceful int) {
-	go func(server Server) {
+func (srv *Server) ListenAndServeGrstGraceful(timeout_graceful int) {
+	go func(server *Server) {
 		if err := <-server.ListenAndServeGrst(); err != nil {
 			logrus.Fatalln("Failed to Run GRST Server:", err)
 		}
