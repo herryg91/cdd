@@ -22,12 +22,12 @@ func (srv *Server) ListenAndServeGrstGraceful(timeout_graceful int) {
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout_graceful)*time.Second)
 	defer cancel()
-	logrus.Infof("[ %v] Grst Server is shutting down... timeout graceful: %ds.", timeout_graceful, time.Now().UTC())
+	logrus.Infof("[%v] Grst Server is shutting down... timeout graceful: %ds.", timeout_graceful, time.Now().UTC())
 
 	if err := srv.GetRestServer().Shutdown(ctx); err != nil {
 		logrus.Fatalln("Rest Server Shutdown Failed: ", err)
 	}
 	srv.GetGrpcServer().GracefulStop()
 
-	logrus.Infoln("[%v] Server is succesfully exited", time.Now().UTC())
+	logrus.Infof("[%v] Server is succesfully exited", time.Now().UTC())
 }
