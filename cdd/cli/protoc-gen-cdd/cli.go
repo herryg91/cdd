@@ -23,7 +23,7 @@ func (pgc *ProtocGenCdd) GenerateGrst(protoFilename string, inputPath string, ou
 	p := protoc.NewProtoc()
 	p.AddProtoPath(inputPath)
 	p.AddProtoPath("$GOPATH/src/")
-	p.AddProtoPath("$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis")
+	// p.AddProtoPath("$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis")
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/cddapis/")
 	p.AddProtoPath("$GOPATH/src/github.com/herryg91/cdd/protoc-gen-cdd/ext/googleapis/")
 	p.AddProtocGenOut(protoc.ProtocGenOut{Name: "cdd", Opts: map[string]string{"type": "grst"}, OutputPath: outputPath, Version: protoc.ProtobufVersion2})
