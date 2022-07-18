@@ -4,6 +4,7 @@ package city
 
 import (
 	context "context"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CityClient interface {
 	Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*City, error)
 	Search(ctx context.Context, in *SearchReq, opts ...grpc.CallOption) (*CityProfiles, error)
+	FileDownload(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FileDownloadResp, error)
 }
 
 type cityClient struct {
@@ -47,12 +49,22 @@ func (c *cityClient) Search(ctx context.Context, in *SearchReq, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *cityClient) FileDownload(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FileDownloadResp, error) {
+	out := new(FileDownloadResp)
+	err := c.cc.Invoke(ctx, "/city.city/FileDownload", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CityServer is the server API for City service.
 // All implementations must embed UnimplementedCityServer
 // for forward compatibility
 type CityServer interface {
 	Get(context.Context, *GetReq) (*City, error)
 	Search(context.Context, *SearchReq) (*CityProfiles, error)
+	FileDownload(context.Context, *empty.Empty) (*FileDownloadResp, error)
 	mustEmbedUnimplementedCityServer()
 }
 
@@ -65,6 +77,9 @@ func (UnimplementedCityServer) Get(context.Context, *GetReq) (*City, error) {
 }
 func (UnimplementedCityServer) Search(context.Context, *SearchReq) (*CityProfiles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedCityServer) FileDownload(context.Context, *empty.Empty) (*FileDownloadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FileDownload not implemented")
 }
 func (UnimplementedCityServer) mustEmbedUnimplementedCityServer() {}
 
@@ -115,6 +130,24 @@ func _City_Search_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _City_FileDownload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CityServer).FileDownload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/city.city/FileDownload",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CityServer).FileDownload(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _City_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "city.city",
 	HandlerType: (*CityServer)(nil),
@@ -126,6 +159,10 @@ var _City_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Search",
 			Handler:    _City_Search_Handler,
+		},
+		{
+			MethodName: "FileDownload",
+			Handler:    _City_FileDownload_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,10 +1,14 @@
 package handler
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
+	"encoding/csv"
 	"errors"
 	"net/http"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	crud_city_usecase "github.com/herryg91/cdd/examples/location-api/app/usecase/crud_city"
 	search_usecase "github.com/herryg91/cdd/examples/location-api/app/usecase/search"
 	pbCity "github.com/herryg91/cdd/examples/location-api/handler/grst/city"
@@ -61,4 +65,28 @@ func (h *CityHandler) Search(ctx context.Context, req *pbCity.SearchReq) (*pbCit
 		})
 	}
 	return resp, nil
+}
+
+func (h *CityHandler) FileDownload(ctx context.Context, req *empty.Empty) (*pbCity.FileDownloadResp, error) {
+
+	result := &bytes.Buffer{}
+	writer := csv.NewWriter(result)
+
+	header := []string{"NIP", "Amount"}
+	content := [][]string{
+		{"00001", "120000"},
+		{"00002", "140000"},
+		{"00003", "150000"},
+	}
+	writer.Write(header)
+	for _, val := range content {
+		writer.Write(val)
+	}
+	writer.Flush()
+
+	r_enc := base64.StdEncoding.EncodeToString(result.Bytes())
+	return &pbCity.FileDownloadResp{
+		Filename:    "test.csv",
+		FileContent: string(r_enc),
+	}, nil
 }

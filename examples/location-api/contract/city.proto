@@ -3,6 +3,7 @@ package city;
 option go_package = ".;city";
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 import "cdd/api/cddext.proto";
 
 service city {
@@ -11,10 +12,17 @@ service city {
             get: "/city/{Id}"
         };
     }
+    
     rpc Search(SearchReq) returns (CityProfiles) {
         option (google.api.http) = {
             post: "/city",
             body: "*"
+        };
+    }
+
+    rpc FileDownload(google.protobuf.Empty) returns (FileDownloadResp) {
+        option (google.api.http) = {
+            get: "/file/download"
         };
     }
 }
@@ -27,6 +35,11 @@ message City {
     int32 Id = 1 [json_name="id", (cdd.api.mysql_field).primary_key = true];
     int32 ProvinceId = 2 [json_name="province_id"];
     string Name = 3 [json_name="name"];
+}
+
+message FileDownloadResp {
+    string Filename = 1 [json_name="filename"];
+    string FileContent = 2 [json_name="filecontent"]; // need to be base64 encode
 }
 
 //message City {

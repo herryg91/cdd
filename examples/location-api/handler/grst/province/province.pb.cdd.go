@@ -28,6 +28,8 @@ var FullMethods = fullMethods{
 
 var NeedAuthFullMethods = []string{}
 
+var NeedApiKeyFullMethods = []string{}
+
 func ValidateRequest(req interface{}) error {
 	defaults.SetDefaults(req)
 	if errs := validator.Validate(req); errs != nil {
