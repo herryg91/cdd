@@ -66,6 +66,18 @@ var (
 	{{- end}}
 	}
 
+	type AuthConfig struct {
+		NeedAuth bool
+		Roles    []string
+	}
+	var AuthConfigFullMethods = map[string]AuthConfig{
+		{{- range $svc := .ServiceExt}}
+		{{- range $mth := $svc.MethodExt}}
+		"/{{$pkgName}}.{{$svc.GetName}}/{{$mth.GetName}}": AuthConfig{  NeedAuth: {{$mth.Auth.Needauth}}, Roles: []string{ {{- range $role := $mth.Auth.Roles}}  "{{$role}}",  {{- end}} }},
+		{{- end}}
+		{{- end}}
+	}
+
 	var NeedApiKeyFullMethods = []string{
 		{{- range $svc := .ServiceExt}}
 	{{- range $mth := $svc.MethodExt}}

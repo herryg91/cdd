@@ -24,6 +24,7 @@ extend google.protobuf.MethodOptions {
 message Auth {
    bool needauth = 130001;
    bool needapikey = 130002;
+   repeated string roles = 130003;
 }
 
 // DB: Mysql

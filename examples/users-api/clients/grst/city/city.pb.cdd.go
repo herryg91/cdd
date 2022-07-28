@@ -17,16 +17,31 @@ import (
 )
 
 type fullMethods struct {
-	City_Get    string
-	City_Search string
+	City_Get          string
+	City_Search       string
+	City_FileDownload string
 }
 
 var FullMethods = fullMethods{
-	City_Get:    "/city.city/Get",
-	City_Search: "/city.city/Search",
+	City_Get:          "/city.city/Get",
+	City_Search:       "/city.city/Search",
+	City_FileDownload: "/city.city/FileDownload",
 }
 
 var NeedAuthFullMethods = []string{}
+
+type AuthConfig struct {
+	NeedAuth bool
+	Roles    []string
+}
+
+var AuthConfigFullMethods = map[string]AuthConfig{
+	"/city.city/Get":          AuthConfig{NeedAuth: false, Roles: []string{"*"}},
+	"/city.city/Search":       AuthConfig{NeedAuth: false, Roles: []string{"*"}},
+	"/city.city/FileDownload": AuthConfig{NeedAuth: false, Roles: []string{"*"}},
+}
+
+var NeedApiKeyFullMethods = []string{}
 
 func ValidateRequest(req interface{}) error {
 	defaults.SetDefaults(req)
@@ -49,6 +64,8 @@ func RegisterCityGrstServer(grpcRestServer *grst.Server, hndl CityServer) {
 	forward_City_Get_0 = grpcRestServer.GetForwardResponseMessage()
 
 	forward_City_Search_0 = grpcRestServer.GetForwardResponseMessage()
+
+	forward_City_FileDownload_0 = grpcRestServer.GetForwardResponseMessage()
 
 	RegisterCityServer(grpcRestServer.GetGrpcServer(), hndl)
 	grpcRestServer.RegisterRestHandler(RegisterCityHandler)
