@@ -15,9 +15,10 @@ service province {
                 post: "/province/{Id}"
             },
         };
-        //option (cdd.api.auth) = { 
-        //    needauth: true, 
-        //}; 
+        option (cdd.api.auth) = { 
+            needauth: true, 
+            roles: ["admin", "employee"],
+        }; 
     }
     rpc GetAll(google.protobuf.Empty) returns (Provinces) {
         option (google.api.http) = {

@@ -26,7 +26,9 @@ var FullMethods = fullMethods{
 	Province_GetAll: "/province.province/GetAll",
 }
 
-var NeedAuthFullMethods = []string{}
+var NeedAuthFullMethods = []string{
+	"/province.province/Get",
+}
 
 type AuthConfig struct {
 	NeedAuth bool
@@ -34,7 +36,7 @@ type AuthConfig struct {
 }
 
 var AuthConfigFullMethods = map[string]AuthConfig{
-	"/province.province/Get":    AuthConfig{NeedAuth: false, Roles: []string{"*"}},
+	"/province.province/Get":    AuthConfig{NeedAuth: true, Roles: []string{"admin", "employee"}},
 	"/province.province/GetAll": AuthConfig{NeedAuth: false, Roles: []string{"*"}},
 }
 
