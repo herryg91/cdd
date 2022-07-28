@@ -43,7 +43,9 @@ func (MethodDescriptorExt) New(svcext *ServiceDescriptorExt, method *descriptorp
 	mthext.HttpRule, mthext.HttpMethod, mthext.PathTemplate = parseExtHTTPRule(method)
 	mthext.Auth = parseExtAuth(method)
 	if mthext.Auth == nil {
-		mthext.Auth = &cddext.Auth{Needauth: false}
+		mthext.Auth = &cddext.Auth{Needauth: false, Roles: []string{"*"}}
+	} else if len(mthext.Auth.Roles) == 0 {
+		mthext.Auth.Roles = []string{"*"}
 	}
 	return mthext
 }

@@ -26,6 +26,17 @@ var FullMethods = fullMethods{
 
 var NeedAuthFullMethods = []string{}
 
+type AuthConfig struct {
+	NeedAuth bool
+	Roles    []string
+}
+
+var AuthConfigFullMethods = map[string]AuthConfig{
+	"/users.users/GetProfile": AuthConfig{NeedAuth: false, Roles: []string{"*"}},
+}
+
+var NeedApiKeyFullMethods = []string{}
+
 func ValidateRequest(req interface{}) error {
 	defaults.SetDefaults(req)
 	if errs := validator.Validate(req); errs != nil {
