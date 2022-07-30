@@ -50,7 +50,7 @@ func wrapMuxWithCors(h http.Handler, corsPolicy CORSPolicy) http.Handler {
 		origin := r.Header.Get("Origin")
 		if corsPolicy.allowAllOrigin || corsPolicy.isAllowedOrigin(origin) {
 			// if origin := r.Header.Get("Origin"); origin != "" {
-			if corsPolicy.allowAllOrigin {
+			if corsPolicy.allowAllOrigin && origin == "" {
 				w.Header().Set("Access-Control-Allow-Origin", "*")
 			} else {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
