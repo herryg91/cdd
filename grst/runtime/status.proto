@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
 
 package runtime;
 option go_package = ".;runtime";
@@ -8,7 +8,7 @@ option go_package = ".;runtime";
 message ResponseSuccess {
     int32 HTTPStatus = 1 [json_name="http_status"];
 	string ProcessTime = 2 [json_name="process_time"];
-	google.protobuf.Any Data = 3 [json_name="data"];
+	google.protobuf.Struct Data = 3 [json_name="data"];
 }
 
 //protobuf protoc-gen-go V1
