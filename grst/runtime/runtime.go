@@ -13,18 +13,19 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/herryg91/cdd/grst/errors"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 var jsonpbmarshal = &jsonpb.Marshaler{EmitDefaults: true}
 
 func ForwardResponseMessage(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
-	// var buf bytes.Buffer
 	buf, err := marshaler.Marshal(resp)
 	if err != nil {
 		errors.HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
-	var data interface{}
+
+	var data map[string]interface{}
 	// log if something goes wrong with unmarshalling response
 	if err := json.Unmarshal(buf, &data); err != nil {
 		errors.HTTPError(ctx, mux, marshaler, w, req, err)
@@ -49,9 +50,9 @@ func ForwardResponseMessage(ctx context.Context, mux *runtime.ServeMux, marshale
 		return
 	}
 
-	// template key value for REST response
+	data_struct, _ := structpb.NewStruct(data)
 	formattedResponse := &ResponseSuccess{
-		Data:        resp,
+		Data:        data_struct,
 		ProcessTime: latency,
 		HTTPStatus:  http.StatusOK,
 	}
