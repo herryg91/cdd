@@ -24,6 +24,7 @@ type Server struct {
 	grpcServer       *grpc.Server
 	grpcPort         int
 	grpcServerOption GRPCServerOption
+	grpcCallOptions  []grpc.CallOption
 
 	// REST
 	enableRest             bool
@@ -59,6 +60,7 @@ func NewServer(grpcPort int, restPort int, enableRest bool, options ...OptionFun
 			maxSendMsgSize:          1024 * 1024 * 20,
 			maxMsgSize:              1024 * 1024 * 20,
 		},
+		grpcCallOptions: []grpc.CallOption{},
 
 		// REST
 		enableRest: enableRest,
@@ -141,6 +143,9 @@ func NewServer(grpcPort int, restPort int, enableRest bool, options ...OptionFun
 
 	var err error
 	opts := []grpc.DialOption{grpc.WithInsecure()}
+	if len(s.grpcCallOptions) > 0 {
+		opts = append(opts, grpc.WithDefaultCallOptions(s.grpcCallOptions...))
+	}
 	s.grpcClientForRest, err = grpc.Dial(s.GetGrpcAddr(), opts...)
 	if err != nil {
 		return nil, err
@@ -231,6 +236,22 @@ func WithCustomCORSPreflightMethods(methods []string) OptionFunc {
 func WithCustomForwardResponseOption(forwardResponseOption func(ctx context.Context, req http.ResponseWriter, resp proto.Message) error) OptionFunc {
 	return func(s *Server) error {
 		s.forwardResponseOption = forwardResponseOption
+		return nil
+	}
+}
+
+// WithGRPCMaxCallRecvMsgSize adds grpc.MaxCallRecvMsgSize to the grpc.CallOption, which in turn affects the grpc.DialOption
+func WithGRPCMaxCallRecvMsgSize(i int) OptionFunc {
+	return func(s *Server) error {
+		s.grpcCallOptions = append(s.grpcCallOptions, grpc.MaxCallRecvMsgSize(i))
+		return nil
+	}
+}
+
+// WithGRPCMaxCallSendMsgSize adds grpc.MaxCallSendMsgSize to the grpc.CallOption, which in turn affects the grpc.DialOption
+func WithGRPCMaxCallSendMsgSize(i int) OptionFunc {
+	return func(s *Server) error {
+		s.grpcCallOptions = append(s.grpcCallOptions, grpc.MaxCallSendMsgSize(i))
 		return nil
 	}
 }
