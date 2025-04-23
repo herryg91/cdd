@@ -1,19 +1,18 @@
 package errors
 
 import (
-	"bytes"
 	"context"
+	"encoding/json"
 	fmt "fmt"
 	"net/http"
 
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-var jsonpbmarshal = &jsonpb.Marshaler{EmitDefaults: true}
+// var jsonpbmarshal = &jsonpb.Marshaler{EmitDefaults: true}
 
 func New(httpStatus int32, grpcStatus codes.Code, code int32, message string, otherErrors ...*ErrorDetail) error {
 	if grpcStatus == codes.OK || httpStatus < 400 {
@@ -78,19 +77,22 @@ func (gre *Error) toJson() []byte {
 		gre = &Error{HTTPStatus: http.StatusOK, GRPCStatus: int32(codes.OK), Code: 200, Message: "OK"}
 	}
 
-	var res bytes.Buffer
-	if err := jsonpbmarshal.Marshal(&res, gre); err != nil {
-		return []byte(fmt.Sprintf(`
-		{
-			"http_status" : %d,
-			"grpc_status" : %d,
-			"code" : %d,
-			"message" : "%s",
-			"other_errors": []
-		}
-		`, gre.HTTPStatus, gre.GRPCStatus, gre.Code, gre.Message))
-	}
-	return res.Bytes()
+	res, _ := json.Marshal(&gre)
+	return res
+
+	// var res bytes.Buffer
+	// if err := jsonpbmarshal.Marshal(&res, gre); err != nil {
+	// 	return []byte(fmt.Sprintf(`
+	// 	{
+	// 		"http_status" : %d,
+	// 		"grpc_status" : %d,
+	// 		"code" : %d,
+	// 		"message" : "%s",
+	// 		"other_errors": []
+	// 	}
+	// 	`, gre.HTTPStatus, gre.GRPCStatus, gre.Code, gre.Message))
+	// }
+	// return res.Bytes()
 }
 
 var errConvert = &Error{HTTPStatus: http.StatusInternalServerError, GRPCStatus: int32(codes.Internal), Code: 99999, Message: "Error converting fault into grpc error", OtherErrors: []*ErrorDetail{}}
