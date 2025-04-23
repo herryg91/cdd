@@ -5,6 +5,7 @@ import (
 
 	"github.com/herryg91/cdd/cdd/commands/doctor"
 	"github.com/herryg91/cdd/cdd/commands/gen"
+	initCmd "github.com/herryg91/cdd/cdd/commands/init"
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +13,7 @@ func main() {
 	rootCmd := &cobra.Command{Use: "cdd", Short: "cdd", Long: "cdd"}
 	rootCmd.AddCommand(gen.NewGenCmd().Command)
 	rootCmd.AddCommand(doctor.NewDoctorCmd().Command)
+	rootCmd.AddCommand(initCmd.NewInitCmd().Command)
 	// execute
 	rootCmd.Execute()
 

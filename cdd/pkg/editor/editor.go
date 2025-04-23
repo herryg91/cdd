@@ -44,5 +44,5 @@ func Open(editorApp EditorApp, tmpFileName string, initData []byte) ([]byte, err
 		return initData, err
 	}
 
-	return ioutil.ReadFile(tmpFile.Name())
+	return os.ReadFile(tmpFile.Name())
 }
